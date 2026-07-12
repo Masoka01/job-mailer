@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
-import { FileText, Trash2, Upload } from "lucide-react";
+import { FileText, Trash2, Upload, CheckCircle2 } from "lucide-react";
 
 interface CvInfo {
   name: string;
@@ -37,9 +37,7 @@ export default function CVUploader() {
       if (json.success) {
         toast.success("CV berhasil diupload!");
         setCvInfo(json.data);
-      } else {
-        toast.error(json.error ?? "Gagal upload CV");
-      }
+      } else toast.error(json.error ?? "Gagal upload CV");
     } catch {
       toast.error("Gagal upload CV");
     } finally {
@@ -55,9 +53,7 @@ export default function CVUploader() {
       if (json.success) {
         setCvInfo(null);
         toast.success("CV berhasil dihapus");
-      } else {
-        toast.error(json.error ?? "Gagal menghapus CV");
-      }
+      } else toast.error(json.error ?? "Gagal menghapus CV");
     } catch {
       toast.error("Gagal menghapus CV");
     }
@@ -69,55 +65,63 @@ export default function CVUploader() {
       : `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 
   return (
-    <div className="card p-6 space-y-5 max-w-lg">
-      <h2 className="text-base font-semibold text-gray-100">CV Saya</h2>
+    <div className="max-w-lg space-y-4">
+      <div className="card p-6 space-y-5">
+        <div className="flex items-center gap-2">
+          <FileText className="w-5 h-5 text-brand-400" />
+          <h2 className="text-base font-semibold text-gray-100">CV Saya</h2>
+        </div>
 
-      {loading ? (
-        <p className="text-sm text-gray-500">Memuat...</p>
-      ) : cvInfo ? (
-        <div className="flex items-center justify-between p-4 bg-surface-900 rounded-xl border border-surface-800">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-brand-500/20 rounded-lg flex items-center justify-center">
-              <FileText className="w-4 h-4 text-brand-500" />
+        {loading ? (
+          <div className="h-16 bg-[#0d1117] rounded-xl animate-pulse" />
+        ) : cvInfo ? (
+          <div className="flex items-center justify-between p-4 bg-[#0d1117] rounded-xl border border-[#30363d]">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-brand-500/10 border border-brand-500/20 rounded-lg flex items-center justify-center">
+                <FileText className="w-5 h-5 text-brand-400" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <p className="text-sm font-medium text-gray-100">
+                    {cvInfo.name}
+                  </p>
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                </div>
+                <p className="text-xs text-gray-600 mt-0.5">
+                  {formatSize(cvInfo.size)} ·{" "}
+                  {new Date(cvInfo.uploadedAt).toLocaleDateString("id-ID")}
+                </p>
+              </div>
             </div>
-            <div>
-              <p className="text-sm font-medium text-gray-100">{cvInfo.name}</p>
-              <p className="text-xs text-gray-500 mt-0.5">
-                {formatSize(cvInfo.size)} · Diupload{" "}
-                {new Date(cvInfo.uploadedAt).toLocaleDateString("id-ID")}
-              </p>
-            </div>
+            <button
+              onClick={handleDelete}
+              className="p-2 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-colors"
+              title="Hapus CV"
+            >
+              <Trash2 className="w-4 h-4" />
+            </button>
           </div>
-          <button
-            onClick={handleDelete}
-            className="p-2 text-red-400 hover:text-red-300 hover:bg-red-900/30 rounded-lg transition-colors"
-            title="Hapus CV"
-          >
-            <Trash2 className="w-4 h-4" />
-          </button>
-        </div>
-      ) : (
-        <div className="p-4 bg-surface-900 rounded-xl border border-dashed border-surface-800 text-center">
-          <Upload className="w-6 h-6 text-gray-600 mx-auto mb-2" />
-          <p className="text-sm text-gray-500">Belum ada CV yang diupload.</p>
-        </div>
-      )}
+        ) : (
+          <div className="p-8 bg-[#0d1117] rounded-xl border border-dashed border-[#30363d] text-center">
+            <Upload className="w-8 h-8 text-gray-700 mx-auto mb-2" />
+            <p className="text-sm text-gray-600">Belum ada CV yang diupload</p>
+          </div>
+        )}
 
-      <div>
-        <label className="btn-secondary cursor-pointer inline-flex items-center gap-2">
-          <Upload className="w-4 h-4" />
-          {uploading ? "Mengupload..." : cvInfo ? "Ganti CV" : "Upload CV"}
-          <input
-            type="file"
-            accept="application/pdf"
-            onChange={handleUpload}
-            disabled={uploading}
-            className="hidden"
-          />
-        </label>
-        <p className="text-xs text-gray-600 mt-2">
-          PDF, maksimal 2 MB (disarankan di bawah 500 KB)
-        </p>
+        <div className="flex items-center gap-4">
+          <label className="btn-secondary cursor-pointer">
+            <Upload className="w-4 h-4" />
+            {uploading ? "Mengupload..." : cvInfo ? "Ganti CV" : "Upload CV"}
+            <input
+              type="file"
+              accept="application/pdf"
+              onChange={handleUpload}
+              disabled={uploading}
+              className="hidden"
+            />
+          </label>
+          <p className="text-xs text-gray-600">PDF, maks. 500 KB</p>
+        </div>
       </div>
     </div>
   );

@@ -18,7 +18,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="id" className={`${inter.variable} dark`}>
-      <body className="bg-surface-900 text-gray-100 antialiased">
+      <body className="bg-[#0d1117] text-gray-100 antialiased">
         <Toaster
           position="top-right"
           toastOptions={{
@@ -26,9 +26,10 @@ export default function RootLayout({
               fontFamily: "var(--font-inter)",
               fontSize: "0.875rem",
               borderRadius: "0.75rem",
-              boxShadow: "0 4px 24px rgba(0,0,0,0.4)",
-              background: "#1e2235",
-              color: "#f1f3f9",
+              background: "#161b22",
+              color: "#e6edf3",
+              border: "1px solid #30363d",
+              boxShadow: "0 8px 32px rgba(0,0,0,0.5)",
             },
           }}
         />

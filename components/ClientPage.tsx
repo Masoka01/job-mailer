@@ -56,18 +56,18 @@ export default function ClientPage() {
   const sentCount = jobs.filter((j) => j.status === "sent").length;
 
   return (
-    <div className="min-h-screen bg-surface-900">
-      <header className="bg-surface-800 border-b border-surface-800 sticky top-0 z-20">
+    <div className="min-h-screen bg-[#0d1117]">
+      {/* Header */}
+      <header className="bg-[#161b22] border-b border-[#30363d] sticky top-0 z-20 backdrop-blur-sm">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 bg-brand-500 rounded-lg flex items-center justify-center">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 bg-brand-500 rounded-lg flex items-center justify-center shadow-brand">
               <Mail className="w-4 h-4 text-white" />
             </div>
-            <span className="font-semibold text-gray-100 tracking-tight">
+            <span className="font-bold text-gray-100 tracking-tight text-lg">
               JobMailer
             </span>
           </div>
-
           <button
             onClick={fetchJobs}
             className="btn-secondary !px-3"
@@ -78,17 +78,18 @@ export default function ClientPage() {
         </div>
       </header>
 
-      <div className="bg-surface-800 border-b border-surface-800">
+      {/* Stats bar */}
+      <div className="bg-[#161b22] border-b border-[#30363d]">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center gap-6 text-sm">
-          <span className="flex items-center gap-1.5 text-gray-400">
+          <span className="flex items-center gap-2 text-gray-500">
             <BriefcaseIcon className="w-4 h-4" />
-            <strong className="text-gray-100">{jobs.length}</strong> total loker
+            <strong className="text-gray-200">{jobs.length}</strong> total loker
           </span>
-          <span className="flex items-center gap-1.5 text-amber-400">
-            <span className="w-2 h-2 bg-amber-400 rounded-full" />
+          <span className="flex items-center gap-2 text-amber-400">
+            <span className="w-2 h-2 bg-amber-400 rounded-full animate-pulse" />
             <strong>{pendingCount}</strong> pending
           </span>
-          <span className="flex items-center gap-1.5 text-emerald-400">
+          <span className="flex items-center gap-2 text-emerald-400">
             <span className="w-2 h-2 bg-emerald-400 rounded-full" />
             <strong>{sentCount}</strong> terkirim
           </span>
@@ -96,15 +97,16 @@ export default function ClientPage() {
       </div>
 
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
-        <div className="flex gap-1 p-1 bg-surface-800 rounded-xl w-fit mb-6">
+        {/* Tab nav */}
+        <div className="flex gap-1 p-1 bg-[#161b22] border border-[#30363d] rounded-xl w-fit mb-8">
           {(["jobs", "template", "cv"] as Tab[]).map((t) => (
             <button
               key={t}
               onClick={() => setTab(t)}
-              className={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-150 ${
+              className={`px-5 py-2 text-sm font-medium rounded-lg transition-all duration-150 ${
                 tab === t
-                  ? "bg-surface-900 text-brand-500 shadow-sm"
-                  : "text-gray-400 hover:text-gray-200"
+                  ? "bg-brand-500 text-white shadow-brand"
+                  : "text-gray-500 hover:text-gray-300"
               }`}
             >
               {t === "jobs"
@@ -133,7 +135,7 @@ export default function ClientPage() {
                   </h2>
                   <button
                     onClick={() => setShowForm(false)}
-                    className="text-gray-500 hover:text-gray-300 text-sm"
+                    className="text-gray-500 hover:text-gray-300 text-sm transition-colors"
                   >
                     Batal
                   </button>
@@ -147,7 +149,6 @@ export default function ClientPage() {
                 />
               </div>
             )}
-
             <JobList
               jobs={jobs}
               loading={loadingJobs}

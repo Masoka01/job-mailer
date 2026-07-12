@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
-import { Save, Plus, Info } from "lucide-react";
+import { Save, Plus, Info, FileText } from "lucide-react";
 import type { EmailTemplate } from "@/types";
 
 interface TemplateEditorProps {
@@ -16,7 +16,7 @@ const VARIABLES = [
   { var: "{{company}}", desc: "Nama perusahaan" },
   { var: "{{position}}", desc: "Posisi yang dilamar" },
   { var: "{{hrEmail}}", desc: "Email HRD tujuan" },
-  { var: "{{senderName}}", desc: "Nama pengirim (dari Gmail user)" },
+  { var: "{{senderName}}", desc: "Nama pengirim" },
   { var: "{{senderEmail}}", desc: "Email pengirim" },
 ];
 
@@ -68,9 +68,7 @@ export default function TemplateEditor({
           body,
           updatedAt: new Date().toISOString(),
         });
-      } else {
-        toast.error(json.error ?? "Gagal menyimpan template");
-      }
+      } else toast.error(json.error ?? "Gagal menyimpan template");
     } catch {
       toast.error("Terjadi kesalahan");
     } finally {
@@ -96,17 +94,15 @@ export default function TemplateEditor({
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
       {/* Sidebar */}
       <div className="lg:col-span-1 space-y-3">
-        <div className="flex items-center justify-between">
-          <span className="label mb-0">Template Tersedia</span>
+        <div className="flex items-center justify-between mb-1">
+          <span className="label mb-0">Template</span>
           <button
             onClick={handleNew}
             className="btn-secondary !px-2.5 !py-1.5 text-xs"
           >
-            <Plus className="w-3.5 h-3.5" />
-            Baru
+            <Plus className="w-3.5 h-3.5" /> Baru
           </button>
         </div>
-
         {templates.map((t) => (
           <button
             key={t.id}
@@ -116,12 +112,15 @@ export default function TemplateEditor({
             }}
             className={`w-full text-left px-3.5 py-3 rounded-xl border text-sm transition-all ${
               activeTemplate?.id === t.id && !isNew
-                ? "bg-brand-500/20 border-brand-500/40 text-brand-400 font-medium"
-                : "bg-surface-800 border-surface-800 text-gray-300 hover:bg-surface-900 hover:border-surface-800"
+                ? "bg-brand-500/10 border-brand-500/30 text-brand-400"
+                : "bg-[#161b22] border-[#30363d] text-gray-400 hover:border-[#484f58] hover:text-gray-200"
             }`}
           >
-            <p className="font-medium truncate">{t.name}</p>
-            <p className="text-xs text-gray-500 mt-0.5 truncate">{t.subject}</p>
+            <div className="flex items-center gap-2 mb-0.5">
+              <FileText className="w-3.5 h-3.5 flex-shrink-0" />
+              <p className="font-medium truncate">{t.name}</p>
+            </div>
+            <p className="text-xs text-gray-600 truncate pl-5">{t.subject}</p>
           </button>
         ))}
       </div>
@@ -129,20 +128,23 @@ export default function TemplateEditor({
       {/* Editor */}
       <div className="lg:col-span-3 space-y-4">
         {/* Variable hint */}
-        <div className="bg-brand-500/10 border border-brand-500/20 rounded-xl p-4">
-          <div className="flex items-start gap-2">
+        <div className="bg-brand-500/5 border border-brand-500/15 rounded-xl p-4">
+          <div className="flex items-start gap-2.5">
             <Info className="w-4 h-4 text-brand-400 mt-0.5 flex-shrink-0" />
             <div>
-              <p className="text-xs font-semibold text-brand-400 mb-2">
-                Variabel tersedia (akan diganti otomatis saat kirim):
+              <p className="text-xs font-semibold text-brand-400 mb-2.5">
+                Variabel tersedia — diganti otomatis saat kirim:
               </p>
               <div className="flex flex-wrap gap-2">
                 {VARIABLES.map((v) => (
-                  <span key={v.var} className="text-xs">
-                    <code className="bg-surface-900 border border-brand-500/30 text-brand-400 px-1.5 py-0.5 rounded font-mono">
+                  <span
+                    key={v.var}
+                    className="text-xs flex items-center gap-1.5"
+                  >
+                    <code className="bg-[#0d1117] border border-brand-500/20 text-brand-400 px-1.5 py-0.5 rounded-md font-mono text-[11px]">
                       {v.var}
                     </code>
-                    <span className="text-gray-500 ml-1">= {v.desc}</span>
+                    <span className="text-gray-600">{v.desc}</span>
                   </span>
                 ))}
               </div>
@@ -160,7 +162,6 @@ export default function TemplateEditor({
             placeholder="cth. Template Formal"
           />
         </div>
-
         <div>
           <label className="label">Subject Email</label>
           <input
@@ -171,18 +172,15 @@ export default function TemplateEditor({
             placeholder="Lamaran Kerja - {{position}} di {{company}}"
           />
         </div>
-
         <div>
           <label className="label">Isi Surat Lamaran</label>
           <textarea
             value={body}
             onChange={(e) => setBody(e.target.value)}
             rows={16}
-            className="input font-mono text-sm resize-y"
-            placeholder={`Yth. HRD {{company}},\n\nDengan hormat,\n\nSaya bermaksud mengajukan lamaran untuk posisi {{position}}...\n\nHormat saya,\n{{senderName}}`}
+            className="input font-mono text-sm resize-y leading-relaxed"
           />
         </div>
-
         <div className="flex justify-end">
           <button
             onClick={handleSave}
