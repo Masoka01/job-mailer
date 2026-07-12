@@ -8,11 +8,9 @@ import {
   Mail,
   Trash2,
   SendHorizonal,
-  FileText,
   CheckCircle2,
   Clock,
   AlertCircle,
-  ChevronDown,
 } from "lucide-react";
 import type { Job } from "@/types";
 
@@ -27,26 +25,25 @@ const STATUS_CONFIG = {
   pending: {
     label: "Belum Kirim",
     icon: Clock,
-    className: "bg-amber-50 text-amber-700 border-amber-100",
+    className: "bg-amber-500/10 text-amber-400 border-amber-500/20",
     dot: "bg-amber-400",
   },
   sent: {
     label: "Terkirim",
     icon: CheckCircle2,
-    className: "bg-emerald-50 text-emerald-700 border-emerald-100",
+    className: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
     dot: "bg-emerald-400",
   },
   failed: {
     label: "Gagal",
     icon: AlertCircle,
-    className: "bg-red-50 text-red-700 border-red-100",
+    className: "bg-red-500/10 text-red-400 border-red-500/20",
     dot: "bg-red-400",
   },
 };
 
 function StatusBadge({ status }: { status: Job["status"] }) {
   const config = STATUS_CONFIG[status];
-  const Icon = config.icon;
   return (
     <span
       className={`inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-lg border ${config.className}`}
@@ -68,7 +65,6 @@ function JobCard({
 }) {
   const [sending, setSending] = useState(false);
   const [deleting, setDeleting] = useState(false);
-  const [expanded, setExpanded] = useState(false);
 
   const handleSend = async () => {
     if (!activeTemplateId) {
@@ -119,35 +115,30 @@ function JobCard({
   };
 
   return (
-    <div className="card overflow-hidden">
+    <div
+      className={`card overflow-hidden transition-all ${job.status === "sent" ? "border-l-4 border-l-emerald-500" : ""}`}
+    >
       <div className="p-4">
         <div className="flex items-start justify-between gap-3">
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-1">
+            <div className="mb-2">
               <StatusBadge status={job.status} />
-              {job.pdfName && (
-                <span className="inline-flex items-center gap-1 text-xs text-gray-400">
-                  <FileText className="w-3 h-3" />
-                  PDF
-                </span>
-              )}
             </div>
-
-            <h3 className="font-semibold text-gray-900 truncate">
+            <h3 className="font-semibold text-gray-100 truncate">
               {job.company}
             </h3>
             <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-1 text-sm text-gray-500">
-              <span className="flex items-center gap-1">
+              <span className="flex items-center gap-1.5">
                 <Briefcase className="w-3.5 h-3.5" />
                 {job.position}
               </span>
-              <span className="flex items-center gap-1">
+              <span className="flex items-center gap-1.5">
                 <Mail className="w-3.5 h-3.5" />
                 {job.hrEmail}
               </span>
             </div>
             {job.sentAt && (
-              <p className="text-xs text-gray-400 mt-1">
+              <p className="text-xs text-gray-600 mt-1.5">
                 Dikirim: {new Date(job.sentAt).toLocaleString("id-ID")}
               </p>
             )}
@@ -157,7 +148,7 @@ function JobCard({
             <button
               onClick={handleDelete}
               disabled={deleting}
-              className="btn-danger !px-2.5 !py-2"
+              className="p-2 text-red-400 hover:text-red-300 hover:bg-red-900/30 rounded-lg transition-colors disabled:opacity-50"
               title="Hapus"
             >
               <Trash2 className="w-4 h-4" />
@@ -168,10 +159,9 @@ function JobCard({
                 onClick={handleSend}
                 disabled={sending}
                 className="btn-primary !px-3"
-                title="Kirim Sekarang"
               >
                 {sending ? (
-                  <span className="animate-spin text-sm">⟳</span>
+                  <span className="animate-spin">⟳</span>
                 ) : (
                   <SendHorizonal className="w-4 h-4" />
                 )}
@@ -182,23 +172,6 @@ function JobCard({
             )}
           </div>
         </div>
-
-        {job.notes && (
-          <button
-            onClick={() => setExpanded(!expanded)}
-            className="mt-2 text-xs text-gray-400 hover:text-gray-600 flex items-center gap-1"
-          >
-            <ChevronDown
-              className={`w-3.5 h-3.5 transition-transform ${expanded ? "rotate-180" : ""}`}
-            />
-            Catatan
-          </button>
-        )}
-        {expanded && job.notes && (
-          <p className="mt-2 text-sm text-gray-600 bg-surface-50 rounded-lg p-3">
-            {job.notes}
-          </p>
-        )}
       </div>
     </div>
   );
@@ -220,9 +193,9 @@ export default function JobList({
       <div className="space-y-3">
         {[1, 2, 3].map((i) => (
           <div key={i} className="card p-4 animate-pulse">
-            <div className="h-4 bg-surface-100 rounded w-1/4 mb-2" />
-            <div className="h-5 bg-surface-100 rounded w-1/2 mb-1" />
-            <div className="h-4 bg-surface-100 rounded w-1/3" />
+            <div className="h-4 bg-surface-800 rounded w-1/4 mb-2" />
+            <div className="h-5 bg-surface-800 rounded w-1/2 mb-1" />
+            <div className="h-4 bg-surface-800 rounded w-1/3" />
           </div>
         ))}
       </div>
@@ -232,24 +205,25 @@ export default function JobList({
   if (jobs.length === 0) {
     return (
       <div className="card p-12 text-center">
-        <Building2 className="w-10 h-10 text-surface-200 mx-auto mb-3" />
-        <p className="text-gray-500 text-sm">Belum ada loker. Tambahkan loker pertama!</p>
+        <Building2 className="w-10 h-10 text-surface-800 mx-auto mb-3" />
+        <p className="text-gray-500 text-sm">
+          Belum ada loker. Tambahkan loker pertama!
+        </p>
       </div>
     );
   }
 
   return (
     <div className="space-y-4">
-      {/* Filter */}
-      <div className="flex gap-1 p-1 bg-surface-100 rounded-xl w-fit text-sm">
+      <div className="flex gap-1 p-1 bg-surface-800 rounded-xl w-fit text-sm">
         {(["all", "pending", "sent", "failed"] as const).map((f) => (
           <button
             key={f}
             onClick={() => setFilter(f)}
             className={`px-3 py-1.5 rounded-lg font-medium transition-all ${
               filter === f
-                ? "bg-white text-gray-800 shadow-sm"
-                : "text-gray-500 hover:text-gray-700"
+                ? "bg-surface-900 text-gray-100 shadow-sm"
+                : "text-gray-500 hover:text-gray-300"
             }`}
           >
             {f === "all"
@@ -265,7 +239,9 @@ export default function JobList({
 
       {filtered.length === 0 ? (
         <div className="card p-8 text-center">
-          <p className="text-gray-400 text-sm">Tidak ada loker dengan status ini</p>
+          <p className="text-gray-500 text-sm">
+            Tidak ada loker dengan status ini
+          </p>
         </div>
       ) : (
         <div className="space-y-3">

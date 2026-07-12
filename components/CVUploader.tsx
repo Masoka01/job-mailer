@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
+import { FileText, Trash2, Upload } from "lucide-react";
 
 interface CvInfo {
   name: string;
@@ -27,11 +28,9 @@ export default function CVUploader() {
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
     setUploading(true);
     const fd = new FormData();
     fd.append("cv", file);
-
     try {
       const res = await fetch("/api/cv", { method: "POST", body: fd });
       const json = await res.json();
@@ -70,33 +69,43 @@ export default function CVUploader() {
       : `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 
   return (
-    <div className="card p-6 space-y-4 max-w-lg">
-      <h2 className="text-base font-semibold text-gray-900">CV Saya</h2>
+    <div className="card p-6 space-y-5 max-w-lg">
+      <h2 className="text-base font-semibold text-gray-100">CV Saya</h2>
 
       {loading ? (
-        <p className="text-sm text-gray-400">Memuat...</p>
+        <p className="text-sm text-gray-500">Memuat...</p>
       ) : cvInfo ? (
-        <div className="flex items-center justify-between p-3 bg-surface-50 rounded-lg border border-surface-200">
-          <div>
-            <p className="text-sm font-medium text-gray-800">{cvInfo.name}</p>
-            <p className="text-xs text-gray-400">
-              {formatSize(cvInfo.size)} · Diupload{" "}
-              {new Date(cvInfo.uploadedAt).toLocaleDateString("id-ID")}
-            </p>
+        <div className="flex items-center justify-between p-4 bg-surface-900 rounded-xl border border-surface-800">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 bg-brand-500/20 rounded-lg flex items-center justify-center">
+              <FileText className="w-4 h-4 text-brand-500" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-gray-100">{cvInfo.name}</p>
+              <p className="text-xs text-gray-500 mt-0.5">
+                {formatSize(cvInfo.size)} · Diupload{" "}
+                {new Date(cvInfo.uploadedAt).toLocaleDateString("id-ID")}
+              </p>
+            </div>
           </div>
           <button
             onClick={handleDelete}
-            className="text-sm text-red-500 hover:text-red-700 font-medium"
+            className="p-2 text-red-400 hover:text-red-300 hover:bg-red-900/30 rounded-lg transition-colors"
+            title="Hapus CV"
           >
-            Hapus
+            <Trash2 className="w-4 h-4" />
           </button>
         </div>
       ) : (
-        <p className="text-sm text-gray-500">Belum ada CV yang diupload.</p>
+        <div className="p-4 bg-surface-900 rounded-xl border border-dashed border-surface-800 text-center">
+          <Upload className="w-6 h-6 text-gray-600 mx-auto mb-2" />
+          <p className="text-sm text-gray-500">Belum ada CV yang diupload.</p>
+        </div>
       )}
 
       <div>
         <label className="btn-secondary cursor-pointer inline-flex items-center gap-2">
+          <Upload className="w-4 h-4" />
           {uploading ? "Mengupload..." : cvInfo ? "Ganti CV" : "Upload CV"}
           <input
             type="file"
@@ -106,7 +115,9 @@ export default function CVUploader() {
             className="hidden"
           />
         </label>
-        <p className="text-xs text-gray-400 mt-1.5">PDF, maksimal 2 MB</p>
+        <p className="text-xs text-gray-600 mt-2">
+          PDF, maksimal 2 MB (disarankan di bawah 500 KB)
+        </p>
       </div>
     </div>
   );

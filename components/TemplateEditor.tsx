@@ -94,11 +94,14 @@ export default function TemplateEditor({
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-      {/* Sidebar templates */}
+      {/* Sidebar */}
       <div className="lg:col-span-1 space-y-3">
         <div className="flex items-center justify-between">
           <span className="label mb-0">Template Tersedia</span>
-          <button onClick={handleNew} className="btn-secondary !px-2.5 !py-1.5 text-xs">
+          <button
+            onClick={handleNew}
+            className="btn-secondary !px-2.5 !py-1.5 text-xs"
+          >
             <Plus className="w-3.5 h-3.5" />
             Baru
           </button>
@@ -113,12 +116,12 @@ export default function TemplateEditor({
             }}
             className={`w-full text-left px-3.5 py-3 rounded-xl border text-sm transition-all ${
               activeTemplate?.id === t.id && !isNew
-                ? "bg-brand-50 border-brand-200 text-brand-700 font-medium"
-                : "bg-white border-surface-200 text-gray-700 hover:bg-surface-50"
+                ? "bg-brand-500/20 border-brand-500/40 text-brand-400 font-medium"
+                : "bg-surface-800 border-surface-800 text-gray-300 hover:bg-surface-900 hover:border-surface-800"
             }`}
           >
             <p className="font-medium truncate">{t.name}</p>
-            <p className="text-xs text-gray-400 mt-0.5 truncate">{t.subject}</p>
+            <p className="text-xs text-gray-500 mt-0.5 truncate">{t.subject}</p>
           </button>
         ))}
       </div>
@@ -126,20 +129,20 @@ export default function TemplateEditor({
       {/* Editor */}
       <div className="lg:col-span-3 space-y-4">
         {/* Variable hint */}
-        <div className="bg-brand-50 border border-brand-100 rounded-xl p-4">
+        <div className="bg-brand-500/10 border border-brand-500/20 rounded-xl p-4">
           <div className="flex items-start gap-2">
-            <Info className="w-4 h-4 text-brand-500 mt-0.5 flex-shrink-0" />
+            <Info className="w-4 h-4 text-brand-400 mt-0.5 flex-shrink-0" />
             <div>
-              <p className="text-xs font-semibold text-brand-700 mb-2">
+              <p className="text-xs font-semibold text-brand-400 mb-2">
                 Variabel tersedia (akan diganti otomatis saat kirim):
               </p>
               <div className="flex flex-wrap gap-2">
                 {VARIABLES.map((v) => (
                   <span key={v.var} className="text-xs">
-                    <code className="bg-white border border-brand-100 text-brand-600 px-1.5 py-0.5 rounded font-mono">
+                    <code className="bg-surface-900 border border-brand-500/30 text-brand-400 px-1.5 py-0.5 rounded font-mono">
                       {v.var}
                     </code>
-                    <span className="text-brand-600/70 ml-1">= {v.desc}</span>
+                    <span className="text-gray-500 ml-1">= {v.desc}</span>
                   </span>
                 ))}
               </div>
@@ -181,7 +184,11 @@ export default function TemplateEditor({
         </div>
 
         <div className="flex justify-end">
-          <button onClick={handleSave} disabled={saving} className="btn-primary">
+          <button
+            onClick={handleSave}
+            disabled={saving}
+            className="btn-primary"
+          >
             <Save className="w-4 h-4" />
             {saving ? "Menyimpan..." : "Simpan Template"}
           </button>
