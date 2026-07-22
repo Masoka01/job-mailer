@@ -80,6 +80,10 @@ export default function ClientPage() {
     } catch {}
   }, []);
 
+  const handleDeleteTemplate = useCallback(() => {
+    fetchTemplates();
+  }, [fetchTemplates]);
+
   useEffect(() => {
     fetchJobs();
     fetchTemplates();
@@ -114,45 +118,45 @@ export default function ClientPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0a0a] flex">
+    <div className="min-h-screen bg-[#0D0D1A] flex">
       {/* ── DESKTOP SIDEBAR ── */}
-      <aside className="hidden lg:flex flex-col w-56 xl:w-60 shrink-0 bg-[#0d0d0d] border-r border-[#1e1e1e] sticky top-0 h-screen">
+      <aside className="hidden lg:flex flex-col w-56 xl:w-60 shrink-0 bg-[#0D0D1A] border-r border-[#0080FF]/20 sticky top-0 h-screen">
         {/* Logo */}
-        <div className="px-4 pt-5 pb-4 border-b border-[#1e1e1e]">
+        <div className="px-4 pt-5 pb-4 border-b border-[#0080FF]/20">
           <div className="flex items-center gap-2.5 mb-4">
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shrink-0">
-              <Mail className="w-4 h-4 text-white" />
+            <div className="w-8 h-8 bg-[#FF006E] rounded-lg flex items-center justify-center shrink-0 shadow-[0_0_10px_rgba(255,0,110,0.3)]">
+              <Mail className="w-4 h-4 text-black" />
             </div>
-            <span className="font-semibold text-[#f0f0f0] text-sm tracking-tight">
+            <span className="font-semibold text-[#00FFFF] text-sm tracking-[0.1em] neon-text-cyan">
               JobMailer
             </span>
           </div>
 
           {/* Stats grid */}
           <div className="grid grid-cols-2 gap-1.5">
-            <div className="bg-[#161616] rounded-lg px-3 py-2 text-center">
-              <p className="text-base font-semibold text-[#f0f0f0]">
+            <div className="bg-[#1A1A2E] rounded-lg px-3 py-2 text-center border border-[#0080FF]/10">
+              <p className="text-base font-semibold text-[#C0C0C0]">
                 {jobs.length}
               </p>
-              <p className="text-[10px] text-[#444] mt-0.5">Total</p>
+              <p className="text-[10px] text-[#5D34D0] mt-0.5 font-mono uppercase tracking-wider">Total</p>
             </div>
-            <div className="bg-[#161616] rounded-lg px-3 py-2 text-center">
-              <p className="text-base font-semibold text-emerald-400">
+            <div className="bg-[#1A1A2E] rounded-lg px-3 py-2 text-center border border-[#0080FF]/10">
+              <p className="text-base font-semibold text-[#00FFFF]">
                 {sentCount}
               </p>
-              <p className="text-[10px] text-[#444] mt-0.5">Terkirim</p>
+              <p className="text-[10px] text-[#5D34D0] mt-0.5 font-mono uppercase tracking-wider">Terkirim</p>
             </div>
-            <div className="bg-[#161616] rounded-lg px-3 py-2 text-center">
-              <p className="text-base font-semibold text-amber-400">
+            <div className="bg-[#1A1A2E] rounded-lg px-3 py-2 text-center border border-[#0080FF]/10">
+              <p className="text-base font-semibold text-[#FFD700]">
                 {pendingCount}
               </p>
-              <p className="text-[10px] text-[#444] mt-0.5">Pending</p>
+              <p className="text-[10px] text-[#5D34D0] mt-0.5 font-mono uppercase tracking-wider">Pending</p>
             </div>
-            <div className="bg-[#161616] rounded-lg px-3 py-2 text-center">
-              <p className="text-base font-semibold text-red-400">
+            <div className="bg-[#1A1A2E] rounded-lg px-3 py-2 text-center border border-[#0080FF]/10">
+              <p className="text-base font-semibold text-[#FF006E]">
                 {failedCount}
               </p>
-              <p className="text-[10px] text-[#444] mt-0.5">Gagal</p>
+              <p className="text-[10px] text-[#5D34D0] mt-0.5 font-mono uppercase tracking-wider">Gagal</p>
             </div>
           </div>
         </div>
@@ -163,10 +167,10 @@ export default function ClientPage() {
             <button
               key={item.id}
               onClick={() => setTab(item.id)}
-              className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm transition-colors ${
+              className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm transition-all duration-200 ${
                 tab === item.id
-                  ? "bg-[#1a2a4a] text-blue-400"
-                  : "text-[#444] hover:text-[#999] hover:bg-[#161616]"
+                  ? "bg-[#0080FF]/15 text-[#0080FF] shadow-[0_0_8px_rgba(0,128,255,0.15)]"
+                  : "text-[#5D34D0]/60 hover:text-[#C0C0C0] hover:bg-[#0080FF]/5"
               }`}
             >
               {item.icon}
@@ -176,16 +180,16 @@ export default function ClientPage() {
         </nav>
 
         {/* Footer */}
-        <div className="px-2 pb-4 space-y-1.5 border-t border-[#1e1e1e] pt-3">
+        <div className="px-2 pb-4 space-y-1.5 border-t border-[#0080FF]/20 pt-3">
           {cvUploaded && (
-            <div className="flex items-center gap-2 px-3 py-2 bg-emerald-950/50 border border-emerald-900/50 rounded-lg">
-              <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full shrink-0" />
-              <span className="text-[11px] text-emerald-400">CV terpasang</span>
+            <div className="flex items-center gap-2 px-3 py-2 bg-[#00FFFF]/10 border border-[#00FFFF]/30 rounded-lg">
+              <span className="w-1.5 h-1.5 bg-[#00FFFF] rounded-full shrink-0 shadow-[0_0_4px_rgba(0,255,255,0.6)]" />
+              <span className="text-[11px] text-[#00FFFF] font-mono">CV terpasang</span>
             </div>
           )}
           <button
             onClick={fetchJobs}
-            className="w-full flex items-center gap-2 px-3 py-2 text-[#444] hover:text-[#888] hover:bg-[#161616] rounded-lg text-xs transition-colors"
+            className="w-full flex items-center gap-2 px-3 py-2 text-[#5D34D0]/60 hover:text-[#00FFFF] hover:bg-[#0080FF]/5 rounded-lg text-xs transition-all duration-200"
           >
             <RefreshCw className="w-3.5 h-3.5" />
             Refresh data
@@ -201,70 +205,58 @@ export default function ClientPage() {
         />
       )}
 
-      {/* ── MOBILE DRAWER (dari kanan) ── */}
+      {/* ── MOBILE DRAWER ── */}
       <div
-        className={`lg:hidden fixed top-0 right-0 h-full w-72 max-w-[85vw] bg-[#0d0d0d] border-l border-[#1e1e1e] z-50 flex flex-col transition-transform duration-300 ease-in-out ${
+        className={`lg:hidden fixed top-0 right-0 h-full w-72 max-w-[85vw] bg-[#0D0D1A] border-l border-[#0080FF]/20 z-50 flex flex-col transition-transform duration-300 ease-in-out ${
           drawerOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        {/* Drawer header */}
-        <div className="px-4 pt-5 pb-4 border-b border-[#1e1e1e]">
+        <div className="px-4 pt-5 pb-4 border-b border-[#0080FF]/20">
           <div className="flex items-center justify-between mb-4">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                <Mail className="w-4 h-4 text-white" />
+              <div className="w-8 h-8 bg-[#FF006E] rounded-lg flex items-center justify-center shadow-[0_0_10px_rgba(255,0,110,0.3)]">
+                <Mail className="w-4 h-4 text-black" />
               </div>
-              <span className="font-semibold text-[#f0f0f0] text-sm">
+              <span className="font-semibold text-[#00FFFF] text-sm neon-text-cyan">
                 JobMailer
               </span>
             </div>
             <button
               onClick={() => setDrawerOpen(false)}
-              className="w-8 h-8 flex items-center justify-center text-[#444] hover:text-[#888] rounded-lg hover:bg-[#161616] transition-colors"
+              className="w-8 h-8 flex items-center justify-center text-[#5D34D0]/60 hover:text-[#C0C0C0] rounded-lg hover:bg-[#0080FF]/5 transition-colors"
             >
               <X className="w-4 h-4" />
             </button>
           </div>
-
-          {/* Stats grid */}
           <div className="grid grid-cols-2 gap-2">
-            <div className="bg-[#161616] rounded-xl px-3 py-2.5 text-center">
-              <p className="text-lg font-semibold text-[#f0f0f0]">
-                {jobs.length}
-              </p>
-              <p className="text-[11px] text-[#444] mt-0.5">Total</p>
+            <div className="bg-[#1A1A2E] rounded-xl px-3 py-2.5 text-center border border-[#0080FF]/10">
+              <p className="text-lg font-semibold text-[#C0C0C0]">{jobs.length}</p>
+              <p className="text-[11px] text-[#5D34D0] mt-0.5 font-mono uppercase tracking-wider">Total</p>
             </div>
-            <div className="bg-[#161616] rounded-xl px-3 py-2.5 text-center">
-              <p className="text-lg font-semibold text-emerald-400">
-                {sentCount}
-              </p>
-              <p className="text-[11px] text-[#444] mt-0.5">Terkirim</p>
+            <div className="bg-[#1A1A2E] rounded-xl px-3 py-2.5 text-center border border-[#0080FF]/10">
+              <p className="text-lg font-semibold text-[#00FFFF]">{sentCount}</p>
+              <p className="text-[11px] text-[#5D34D0] mt-0.5 font-mono uppercase tracking-wider">Terkirim</p>
             </div>
-            <div className="bg-[#161616] rounded-xl px-3 py-2.5 text-center">
-              <p className="text-lg font-semibold text-amber-400">
-                {pendingCount}
-              </p>
-              <p className="text-[11px] text-[#444] mt-0.5">Pending</p>
+            <div className="bg-[#1A1A2E] rounded-xl px-3 py-2.5 text-center border border-[#0080FF]/10">
+              <p className="text-lg font-semibold text-[#FFD700]">{pendingCount}</p>
+              <p className="text-[11px] text-[#5D34D0] mt-0.5 font-mono uppercase tracking-wider">Pending</p>
             </div>
-            <div className="bg-[#161616] rounded-xl px-3 py-2.5 text-center">
-              <p className="text-lg font-semibold text-red-400">
-                {failedCount}
-              </p>
-              <p className="text-[11px] text-[#444] mt-0.5">Gagal</p>
+            <div className="bg-[#1A1A2E] rounded-xl px-3 py-2.5 text-center border border-[#0080FF]/10">
+              <p className="text-lg font-semibold text-[#FF006E]">{failedCount}</p>
+              <p className="text-[11px] text-[#5D34D0] mt-0.5 font-mono uppercase tracking-wider">Gagal</p>
             </div>
           </div>
         </div>
 
-        {/* Nav */}
         <nav className="flex-1 px-3 py-3 space-y-1">
           {NAV_ITEMS.map((item) => (
             <button
               key={item.id}
               onClick={() => handleTabChange(item.id)}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm transition-colors ${
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm transition-all duration-200 ${
                 tab === item.id
-                  ? "bg-[#1a2a4a] text-blue-400"
-                  : "text-[#555] hover:text-[#999] hover:bg-[#161616]"
+                  ? "bg-[#0080FF]/15 text-[#0080FF] shadow-[0_0_8px_rgba(0,128,255,0.15)]"
+                  : "text-[#5D34D0]/60 hover:text-[#C0C0C0] hover:bg-[#0080FF]/5"
               }`}
             >
               {item.icon}
@@ -273,12 +265,11 @@ export default function ClientPage() {
           ))}
         </nav>
 
-        {/* Drawer footer */}
-        <div className="px-3 pb-6 pt-3 border-t border-[#1e1e1e]">
+        <div className="px-3 pb-6 pt-3 border-t border-[#0080FF]/20">
           {cvUploaded && (
-            <div className="flex items-center gap-2 px-4 py-2.5 bg-emerald-950/50 border border-emerald-900/50 rounded-xl">
-              <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full" />
-              <span className="text-xs text-emerald-400">CV terpasang</span>
+            <div className="flex items-center gap-2 px-4 py-2.5 bg-[#00FFFF]/10 border border-[#00FFFF]/30 rounded-xl">
+              <span className="w-1.5 h-1.5 bg-[#00FFFF] rounded-full shadow-[0_0_4px_rgba(0,255,255,0.6)]" />
+              <span className="text-xs text-[#00FFFF] font-mono">CV terpasang</span>
             </div>
           )}
         </div>
@@ -286,81 +277,54 @@ export default function ClientPage() {
 
       {/* ── MAIN CONTENT ── */}
       <div className="flex-1 flex flex-col min-w-0">
-        {/* Mobile topbar */}
-        <header className="lg:hidden sticky top-0 z-30 bg-[#0a0a0a]/90 backdrop-blur border-b border-[#1e1e1e]">
+        <header className="lg:hidden sticky top-0 z-30 bg-[#0D0D1A]/90 backdrop-blur border-b border-[#0080FF]/20">
           <div className="flex items-center justify-between px-4 h-14">
             <div className="flex items-center gap-2.5">
-              <div className="w-7 h-7 bg-blue-600 rounded-lg flex items-center justify-center">
-                <Mail className="w-3.5 h-3.5 text-white" />
+              <div className="w-7 h-7 bg-[#FF006E] rounded-lg flex items-center justify-center shadow-[0_0_8px_rgba(255,0,110,0.3)]">
+                <Mail className="w-3.5 h-3.5 text-black" />
               </div>
-              <span className="font-semibold text-[#f0f0f0] text-sm">
-                JobMailer
-              </span>
+              <span className="font-semibold text-[#00FFFF] text-sm neon-text-cyan">JobMailer</span>
             </div>
             <div className="flex items-center gap-2">
-              <button
-                onClick={fetchJobs}
-                className="w-9 h-9 flex items-center justify-center text-[#555] hover:text-[#888] rounded-lg hover:bg-[#161616] transition-colors"
-              >
+              <button onClick={fetchJobs} className="w-9 h-9 flex items-center justify-center text-[#5D34D0]/60 hover:text-[#00FFFF] rounded-lg hover:bg-[#0080FF]/5 transition-colors">
                 <RefreshCw className="w-4 h-4" />
               </button>
-              <button
-                onClick={() => setDrawerOpen(true)}
-                className="w-9 h-9 flex items-center justify-center text-[#555] hover:text-[#888] rounded-lg hover:bg-[#161616] transition-colors"
-                aria-label="Buka menu"
-              >
+              <button onClick={() => setDrawerOpen(true)} className="w-9 h-9 flex items-center justify-center text-[#5D34D0]/60 hover:text-[#00FFFF] rounded-lg hover:bg-[#0080FF]/5 transition-colors" aria-label="Buka menu">
                 <Menu className="w-5 h-5" />
               </button>
             </div>
           </div>
         </header>
 
-        {/* Desktop page header */}
         <div className="hidden lg:flex items-center justify-between px-6 xl:px-8 pt-6 pb-0">
-          <h1 className="text-base font-semibold text-[#e0e0e0]">
+          <h1 className="text-base font-semibold text-[#FF006E] neon-text-pink uppercase tracking-wider">
             {PAGE_TITLES[tab]}
           </h1>
           {tab === "jobs" && (
-            <button
-              onClick={() => setShowForm(true)}
-              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium px-4 py-2 rounded-xl transition-colors"
-            >
+            <button onClick={() => setShowForm(true)} className="btn-primary text-xs px-4 py-2">
               <Plus className="w-4 h-4" />
               Tambah loker
             </button>
           )}
         </div>
 
-        {/* Page content */}
         <main className="flex-1 px-4 lg:px-6 xl:px-8 py-5 lg:py-6 pb-24 lg:pb-8">
           {tab === "cv" && <CVUploader />}
 
           {tab === "jobs" && (
             <div className="space-y-4">
-              {/* Mobile add button */}
               {!showForm && (
-                <button
-                  onClick={() => setShowForm(true)}
-                  className="lg:hidden flex items-center gap-2 w-full justify-center bg-[#161616] hover:bg-[#1e1e1e] border border-[#2a2a2a] hover:border-[#333] text-[#888] hover:text-[#bbb] text-sm font-medium px-4 py-3 rounded-xl transition-colors"
-                >
+                <button onClick={() => setShowForm(true)} className="lg:hidden flex items-center gap-2 w-full justify-center bg-[#1A1A2E] hover:bg-[#1A1A2E]/80 border border-[#0080FF]/30 hover:border-[#0080FF]/50 text-[#0080FF] hover:text-[#00FFFF] text-sm font-medium px-4 py-3 rounded-lg transition-all duration-200">
                   <Plus className="w-4 h-4" />
                   Tambah loker baru
                 </button>
               )}
 
-              {/* Form */}
               {showForm && (
-                <div className="bg-[#111] border border-[#222] rounded-2xl p-5">
+                <div className="bg-[#1A1A2E] border border-[#FF006E]/30 rounded-xl p-5 shadow-[0_0_15px_rgba(255,0,110,0.1)]">
                   <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-sm font-semibold text-[#e0e0e0]">
-                      Tambah loker baru
-                    </h2>
-                    <button
-                      onClick={() => setShowForm(false)}
-                      className="text-[#444] hover:text-[#888] text-xs transition-colors"
-                    >
-                      Batal
-                    </button>
+                    <h2 className="text-sm font-semibold text-[#FF006E] neon-text-pink uppercase tracking-wider">Tambah loker baru</h2>
+                    <button onClick={() => setShowForm(false)} className="text-[#5D34D0]/60 hover:text-[#C0C0C0] text-xs transition-colors">Batal</button>
                   </div>
                   <JobForm
                     onSuccess={() => {
@@ -390,6 +354,7 @@ export default function ClientPage() {
                 setActiveTemplate(updated);
                 fetchTemplates();
               }}
+              onDelete={handleDeleteTemplate}
             />
           )}
         </main>

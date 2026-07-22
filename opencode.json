@@ -1,0 +1,12 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "plugin": ["@dietrichgebert/ponytail"],
+  "lsp": {
+    "typescript": {
+      "command": ["typescript-language-server", "--stdio"]
+    },
+    "eslint": {
+      "command": ["vscode-eslint-language-server", "--stdio"]
+    }
+  }
+}

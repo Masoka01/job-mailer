@@ -20,6 +20,7 @@ export interface EmailTemplate {
   subject: string;
   body: string;
   updatedAt: string;
+  isDefault?: boolean;
 }
 
 export interface SendEmailPayload {

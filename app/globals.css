@@ -4,35 +4,85 @@
 
 @layer base {
   * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
+
   body {
     min-height: 100vh;
-    background: #0a0a0a;
-    color: #e0e0e0;
+    background: #0D0D1A;
+    color: #C0C0C0;
     -webkit-font-smoothing: antialiased;
+    position: relative;
   }
+}
+
+#crt-overlay {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.08) 2px,
+    rgba(0, 0, 0, 0.08) 4px
+  );
+}
+
+@layer utilities {
+  .neon-text-blue {
+    text-shadow: 0 0 7px rgba(0,128,255,0.6), 0 0 10px rgba(0,128,255,0.4);
+  }
+  .neon-text-pink {
+    text-shadow: 0 0 7px rgba(255,0,110,0.6), 0 0 10px rgba(255,0,110,0.4);
+  }
+  .neon-text-cyan {
+    text-shadow: 0 0 7px rgba(0,255,255,0.6), 0 0 10px rgba(0,255,255,0.4);
+  }
+}
+
+@keyframes glitch-skew {
+  0% { transform: skew(0deg); }
+  20% { transform: skew(-2deg); }
+  40% { transform: skew(0.5deg); }
+  60% { transform: skew(-1deg); }
+  80% { transform: skew(1deg); }
+  100% { transform: skew(0deg); }
 }
 
 @layer components {
   .input {
     @apply w-full px-3.5 py-2.5
-           bg-[#0d0d0d] border border-[#222] rounded-xl
-           text-sm text-[#e0e0e0] placeholder-[#333]
-           focus:outline-none focus:ring-2 focus:ring-blue-600/30 focus:border-blue-600/50
-           transition-all duration-150;
+           bg-[#0D0D1A] border border-[#0080FF]/30 rounded-lg
+           text-sm text-[#C0C0C0] placeholder-[#5D34D0]/50 font-mono
+           focus:outline-none focus:border-[#00FFFF] focus:shadow-[0_0_8px_rgba(0,255,255,0.2)]
+           transition-all duration-200;
   }
 
   .label {
-    @apply block text-xs font-medium text-[#444] mb-1.5;
+    @apply block text-xs font-medium text-[#FF006E] mb-1.5 font-mono tracking-wider uppercase;
   }
 
   .card {
-    @apply bg-[#111] rounded-2xl border border-[#1e1e1e];
+    @apply bg-[#1A1A2E] rounded-xl border border-[#0080FF]/20;
+  }
+
+  .btn-primary {
+    @apply flex items-center gap-2 bg-[#FF006E] hover:bg-[#FF006E]/80 text-black font-mono font-semibold text-sm px-5 py-2.5 rounded-lg transition-all duration-200;
+    box-shadow: 0 0 12px rgba(255,0,110,0.3);
+  }
+  .btn-primary:hover {
+    box-shadow: 0 0 20px rgba(255,0,110,0.5);
+  }
+
+  .btn-secondary {
+    @apply flex items-center gap-2 border border-[#0080FF]/50 text-[#0080FF] hover:bg-[#0080FF]/10 font-mono text-sm px-4 py-2 rounded-lg transition-all duration-200;
+  }
+  .btn-secondary:hover {
+    box-shadow: 0 0 10px rgba(0,128,255,0.2);
   }
 }
 
-/* Scrollbar */
-::-webkit-scrollbar { width: 4px; height: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #222; border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { background: #333; }
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #0D0D1A; }
+::-webkit-scrollbar-thumb { background: #5D34D0; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #0080FF; }

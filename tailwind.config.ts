@@ -6,24 +6,32 @@ const config: Config = {
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
-  darkMode: "class",
   theme: {
     extend: {
       fontFamily: {
-        sans: ["Inter", "system-ui", "sans-serif"],
-        mono: ["JetBrains Mono", "monospace"],
+        sans: ["ui-monospace", "SFMono-Regular", "monospace"],
+        mono: ["ui-monospace", "SFMono-Regular", "monospace"],
       },
       colors: {
-        brand: {
-          400: "#60a5fa",
-          500: "#3b82f6",
-          600: "#2563eb",
+        neon: {
+          blue: "#0080FF",
+          pink: "#FF006E",
+          cyan: "#00FFFF",
+          purple: "#5D34D0",
+          silver: "#C0C0C0",
+          gold: "#FFD700",
+        },
+        deep: {
+          black: "#1A1A2E",
+          dark: "#0D0D1A",
         },
       },
       boxShadow: {
-        card: "0 1px 3px rgba(0,0,0,0.4), 0 4px 16px rgba(0,0,0,0.3)",
-        glow: "0 0 0 1px rgba(59,130,246,0.2), 0 4px 24px rgba(59,130,246,0.1)",
-        brand: "0 4px 20px rgba(59,130,246,0.4)",
+        neon: "0 0 10px rgba(0,128,255,0.3), 0 0 20px rgba(0,128,255,0.15)",
+        "neon-pink":
+          "0 0 10px rgba(255,0,110,0.3), 0 0 20px rgba(255,0,110,0.15)",
+        "neon-cyan":
+          "0 0 10px rgba(0,255,255,0.3), 0 0 20px rgba(0,255,255,0.15)",
       },
     },
   },

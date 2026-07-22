@@ -68,26 +68,28 @@ export default function CVUploader() {
     <div className="max-w-lg space-y-4">
       <div className="card p-6 space-y-5">
         <div className="flex items-center gap-2">
-          <FileText className="w-5 h-5 text-brand-400" />
-          <h2 className="text-base font-semibold text-gray-100">CV Saya</h2>
+          <FileText className="w-5 h-5 text-[#0080FF]" />
+          <h2 className="text-base font-semibold text-[#C0C0C0] font-mono uppercase tracking-wider">
+            CV Saya
+          </h2>
         </div>
 
         {loading ? (
-          <div className="h-16 bg-[#0d1117] rounded-xl animate-pulse" />
+          <div className="h-16 bg-[#0D0D1A] rounded-lg animate-pulse border border-[#0080FF]/10" />
         ) : cvInfo ? (
-          <div className="flex items-center justify-between p-4 bg-[#0d1117] rounded-xl border border-[#30363d]">
+          <div className="flex items-center justify-between p-4 bg-[#0D0D1A] rounded-lg border border-[#0080FF]/20">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-brand-500/10 border border-brand-500/20 rounded-lg flex items-center justify-center">
-                <FileText className="w-5 h-5 text-brand-400" />
+              <div className="w-10 h-10 bg-[#0080FF]/10 border border-[#0080FF]/30 rounded-lg flex items-center justify-center">
+                <FileText className="w-5 h-5 text-[#0080FF]" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <p className="text-sm font-medium text-gray-100">
+                  <p className="text-sm font-medium text-[#C0C0C0] font-mono">
                     {cvInfo.name}
                   </p>
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-[#00FFFF]" />
                 </div>
-                <p className="text-xs text-gray-600 mt-0.5">
+                <p className="text-xs text-[#5D34D0] mt-0.5 font-mono">
                   {formatSize(cvInfo.size)} ·{" "}
                   {new Date(cvInfo.uploadedAt).toLocaleDateString("id-ID")}
                 </p>
@@ -95,16 +97,18 @@ export default function CVUploader() {
             </div>
             <button
               onClick={handleDelete}
-              className="p-2 text-red-400 hover:text-red-300 hover:bg-red-500/10 rounded-lg transition-colors"
+              className="p-2 text-[#FF006E]/60 hover:text-[#FF006E] hover:bg-[#FF006E]/10 rounded-lg transition-colors"
               title="Hapus CV"
             >
               <Trash2 className="w-4 h-4" />
             </button>
           </div>
         ) : (
-          <div className="p-8 bg-[#0d1117] rounded-xl border border-dashed border-[#30363d] text-center">
-            <Upload className="w-8 h-8 text-gray-700 mx-auto mb-2" />
-            <p className="text-sm text-gray-600">Belum ada CV yang diupload</p>
+          <div className="p-8 bg-[#0D0D1A] rounded-lg border border-dashed border-[#0080FF]/30 text-center">
+            <Upload className="w-8 h-8 text-[#5D34D0] mx-auto mb-2" />
+            <p className="text-sm text-[#5D34D0]/60 font-mono">
+              Belum ada CV yang diupload
+            </p>
           </div>
         )}
 
@@ -120,7 +124,7 @@ export default function CVUploader() {
               className="hidden"
             />
           </label>
-          <p className="text-xs text-gray-600">PDF, maks. 500 KB</p>
+          <p className="text-xs text-[#5D34D0]/60 font-mono">PDF, maks. 500 KB</p>
         </div>
       </div>
     </div>

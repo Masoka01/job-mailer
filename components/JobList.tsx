@@ -11,6 +11,7 @@ import {
   CheckCircle2,
   Loader2,
 } from "lucide-react";
+import ConfirmDialog from "@/components/ConfirmDialog";
 import type { Job } from "@/types";
 
 interface JobListProps {
@@ -23,16 +24,18 @@ interface JobListProps {
 const STATUS_CONFIG = {
   pending: {
     label: "Pending",
-    className: "bg-amber-500/10 text-amber-400 border border-amber-500/20",
+    className: "bg-[#FFD700]/10 text-[#FFD700] border border-[#FFD700]/20",
+    dot: "bg-[#FFD700]",
   },
   sent: {
     label: "Terkirim",
-    className:
-      "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20",
+    className: "bg-[#00FFFF]/10 text-[#00FFFF] border border-[#00FFFF]/20",
+    dot: "bg-[#00FFFF]",
   },
   failed: {
     label: "Gagal",
-    className: "bg-red-500/10 text-red-400 border border-red-500/20",
+    className: "bg-[#FF006E]/10 text-[#FF006E] border border-[#FF006E]/20",
+    dot: "bg-[#FF006E]",
   },
 };
 
@@ -40,17 +43,9 @@ function StatusBadge({ status }: { status: Job["status"] }) {
   const config = STATUS_CONFIG[status];
   return (
     <span
-      className={`inline-flex items-center gap-1.5 text-[11px] font-medium px-2 py-0.5 rounded-md ${config.className}`}
+      className={`inline-flex items-center gap-1.5 text-[11px] font-medium px-2 py-0.5 rounded-md font-mono ${config.className}`}
     >
-      <span
-        className={`w-1.5 h-1.5 rounded-full ${
-          status === "pending"
-            ? "bg-amber-400"
-            : status === "sent"
-              ? "bg-emerald-400"
-              : "bg-red-400"
-        }`}
-      />
+      <span className={`w-1.5 h-1.5 rounded-full ${config.dot}`} />
       {config.label}
     </span>
   );
@@ -60,10 +55,12 @@ function JobCard({
   job,
   activeTemplateId,
   onRefresh,
+  onDeleteRequest,
 }: {
   job: Job;
   activeTemplateId?: string;
   onRefresh: () => void;
+  onDeleteRequest: (job: Job) => void;
 }) {
   const [sending, setSending] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -96,7 +93,6 @@ function JobCard({
   };
 
   const handleDelete = async () => {
-    if (!confirm(`Hapus loker ${job.company} - ${job.position}?`)) return;
     setDeleting(true);
     try {
       const res = await fetch(`/api/jobs?id=${job.id}`, { method: "DELETE" });
@@ -114,8 +110,10 @@ function JobCard({
 
   return (
     <div
-      className={`bg-[#111] border rounded-xl p-4 transition-colors hover:border-[#2a2a2a] ${
-        job.status === "sent" ? "border-[#1a3a22]" : "border-[#1e1e1e]"
+      className={`bg-[#1A1A2E] border rounded-lg p-4 transition-all duration-200 hover:shadow-[0_0_10px_rgba(0,128,255,0.12)] ${
+        job.status === "sent"
+          ? "border-[#00FFFF]/30"
+          : "border-[#0080FF]/15 hover:border-[#0080FF]/30"
       }`}
     >
       <div className="flex items-start justify-between gap-3">
@@ -123,15 +121,15 @@ function JobCard({
           <div className="flex items-center gap-2 flex-wrap mb-2">
             <StatusBadge status={job.status} />
             {job.pdfName && (
-              <span className="text-[11px] text-[#444] border border-[#222] px-2 py-0.5 rounded-md">
-                📎 {job.pdfName}
+              <span className="text-[11px] text-[#5D34D0] border border-[#5D34D0]/30 px-2 py-0.5 rounded-md font-mono">
+                {job.pdfName}
               </span>
             )}
           </div>
-          <h3 className="font-semibold text-[#e0e0e0] text-sm truncate">
+          <h3 className="font-semibold text-[#C0C0C0] text-sm truncate font-mono">
             {job.company}
           </h3>
-          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1 text-xs text-[#555]">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1 text-xs text-[#5D34D0]">
             <span className="flex items-center gap-1.5">
               <Briefcase className="w-3 h-3" />
               {job.position}
@@ -142,24 +140,23 @@ function JobCard({
             </span>
           </div>
           {job.sentAt && (
-            <p className="text-[11px] text-[#333] mt-1.5 flex items-center gap-1">
-              <CheckCircle2 className="w-3 h-3 text-emerald-700" />
+            <p className="text-[11px] text-[#00FFFF]/60 mt-1.5 flex items-center gap-1 font-mono">
+              <CheckCircle2 className="w-3 h-3 text-[#00FFFF]" />
               Dikirim {new Date(job.sentAt).toLocaleString("id-ID")}
             </p>
           )}
           {job.notes && (
-            <p className="text-[11px] text-[#444] mt-1 italic truncate">
+            <p className="text-[11px] text-[#5D34D0]/80 mt-1 italic truncate font-mono">
               {job.notes}
             </p>
           )}
         </div>
 
-        {/* Actions */}
         <div className="flex items-center gap-1.5 shrink-0">
           <button
-            onClick={handleDelete}
+            onClick={() => onDeleteRequest(job)}
             disabled={deleting}
-            className="w-8 h-8 flex items-center justify-center text-[#333] hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors disabled:opacity-40"
+            className="w-8 h-8 flex items-center justify-center text-[#5D34D0]/60 hover:text-[#FF006E] hover:bg-[#FF006E]/10 rounded-lg transition-colors disabled:opacity-40"
             title="Hapus"
           >
             {deleting ? (
@@ -172,14 +169,14 @@ function JobCard({
             <button
               onClick={handleSend}
               disabled={sending}
-              className="flex items-center gap-1.5 bg-blue-600/20 hover:bg-blue-600/30 border border-blue-600/30 text-blue-400 text-xs font-medium px-3 py-1.5 rounded-lg transition-colors disabled:opacity-40"
+              className="flex items-center gap-1.5 bg-[#0080FF]/15 hover:bg-[#0080FF]/25 border border-[#0080FF]/30 text-[#0080FF] text-xs font-medium px-3 py-1.5 rounded-lg transition-all duration-200 disabled:opacity-40"
             >
               {sending ? (
                 <Loader2 className="w-3.5 h-3.5 animate-spin" />
               ) : (
                 <SendHorizonal className="w-3.5 h-3.5" />
               )}
-              <span className="hidden sm:inline">
+              <span className="hidden sm:inline font-mono">
                 {sending ? "Mengirim..." : "Kirim"}
               </span>
             </button>
@@ -198,18 +195,19 @@ export default function JobList({
 }: JobListProps) {
   const [filter, setFilter] = useState<"all" | Job["status"]>("all");
   const [blasting, setBlasting] = useState(false);
+  const [deleteJob, setDeleteJob] = useState<Job | null>(null);
+  const [confirmBlast, setConfirmBlast] = useState(false);
 
   const filtered =
     filter === "all" ? jobs : jobs.filter((j) => j.status === filter);
   const pendingJobs = jobs.filter((j) => j.status === "pending");
 
   const handleBlast = async () => {
+    setConfirmBlast(false);
     if (!activeTemplateId) {
       toast.error("Pilih template terlebih dahulu");
       return;
     }
-    if (!confirm(`Kirim email ke semua ${pendingJobs.length} loker pending?`))
-      return;
     setBlasting(true);
     try {
       const res = await fetch("/api/send", {
@@ -235,11 +233,11 @@ export default function JobList({
         {[1, 2, 3].map((i) => (
           <div
             key={i}
-            className="bg-[#111] border border-[#1e1e1e] rounded-xl p-4 animate-pulse"
+            className="bg-[#1A1A2E] border border-[#0080FF]/10 rounded-lg p-4 animate-pulse"
           >
-            <div className="h-3 bg-[#1e1e1e] rounded w-16 mb-3" />
-            <div className="h-4 bg-[#1e1e1e] rounded w-1/2 mb-2" />
-            <div className="h-3 bg-[#1e1e1e] rounded w-1/3" />
+            <div className="h-3 bg-[#0080FF]/10 rounded w-16 mb-3" />
+            <div className="h-4 bg-[#0080FF]/10 rounded w-1/2 mb-2" />
+            <div className="h-3 bg-[#0080FF]/10 rounded w-1/3" />
           </div>
         ))}
       </div>
@@ -249,8 +247,10 @@ export default function JobList({
   if (jobs.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
-        <Building2 className="w-10 h-10 text-[#222] mb-3" />
-        <p className="text-[#444] text-sm">Belum ada loker ditambahkan</p>
+        <Building2 className="w-10 h-10 text-[#5D34D0] mb-3" />
+        <p className="text-[#5D34D0]/60 text-sm font-mono">
+          Belum ada loker ditambahkan
+        </p>
       </div>
     );
   }
@@ -273,16 +273,15 @@ export default function JobList({
 
   return (
     <div className="space-y-3">
-      {/* Filter tabs */}
-      <div className="flex gap-1 p-1 bg-[#111] border border-[#1e1e1e] rounded-xl w-fit text-xs overflow-x-auto">
+      <div className="flex gap-1 p-1 bg-[#1A1A2E] border border-[#0080FF]/15 rounded-lg w-fit text-xs overflow-x-auto">
         {FILTERS.map((f) => (
           <button
             key={f.id}
             onClick={() => setFilter(f.id)}
-            className={`px-3 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors ${
+            className={`px-3 py-1.5 rounded-lg font-medium whitespace-nowrap transition-all duration-200 font-mono ${
               filter === f.id
-                ? "bg-[#1a2a4a] text-blue-400"
-                : "text-[#444] hover:text-[#888]"
+                ? "bg-[#0080FF]/15 text-[#0080FF] shadow-[0_0_6px_rgba(0,128,255,0.12)]"
+                : "text-[#5D34D0]/60 hover:text-[#C0C0C0]"
             }`}
           >
             {f.label}
@@ -290,10 +289,9 @@ export default function JobList({
         ))}
       </div>
 
-      {/* Job cards */}
       {filtered.length === 0 ? (
-        <div className="bg-[#111] border border-[#1e1e1e] rounded-xl p-8 text-center">
-          <p className="text-[#444] text-sm">
+        <div className="bg-[#1A1A2E] border border-[#0080FF]/10 rounded-lg p-8 text-center">
+          <p className="text-[#5D34D0]/60 text-sm font-mono">
             Tidak ada loker dengan status ini
           </p>
         </div>
@@ -305,17 +303,17 @@ export default function JobList({
               job={job}
               activeTemplateId={activeTemplateId}
               onRefresh={onRefresh}
+              onDeleteRequest={setDeleteJob}
             />
           ))}
         </div>
       )}
 
-      {/* Blast button */}
       {pendingJobs.length > 0 && (
         <button
-          onClick={handleBlast}
+          onClick={() => setConfirmBlast(true)}
           disabled={blasting}
-          className="w-full flex items-center justify-center gap-2 bg-blue-600/15 hover:bg-blue-600/25 border border-blue-600/25 text-blue-400 text-sm font-medium py-3 rounded-xl transition-colors disabled:opacity-40 mt-2"
+          className="w-full flex items-center justify-center gap-2 bg-[#FF006E]/15 hover:bg-[#FF006E]/25 border border-[#FF006E]/30 text-[#FF006E] text-sm font-medium py-3 rounded-lg transition-all duration-200 disabled:opacity-40 mt-2 font-mono"
         >
           {blasting ? (
             <Loader2 className="w-4 h-4 animate-spin" />
@@ -327,6 +325,40 @@ export default function JobList({
             : `Kirim semua yang pending (${pendingJobs.length})`}
         </button>
       )}
+
+      <ConfirmDialog
+        open={deleteJob !== null}
+        title="Hapus loker"
+        message={`Hapus loker "${deleteJob?.company}" - ${deleteJob?.position}?`}
+        confirmLabel="Hapus"
+        cancelLabel="Batal"
+        onConfirm={() => {
+          if (deleteJob) {
+            const job = deleteJob;
+            setDeleteJob(null);
+            fetch(`/api/jobs?id=${job.id}`, { method: "DELETE" })
+              .then((r) => r.json())
+              .then((json) => {
+                if (json.success) {
+                  toast.success("Loker dihapus");
+                  onRefresh();
+                } else toast.error(json.error ?? "Gagal menghapus");
+              })
+              .catch(() => toast.error("Terjadi kesalahan"));
+          }
+        }}
+        onCancel={() => setDeleteJob(null)}
+      />
+
+      <ConfirmDialog
+        open={confirmBlast}
+        title="Kirim semua pending"
+        message={`Kirim email ke semua ${pendingJobs.length} loker pending?`}
+        confirmLabel="Kirim"
+        cancelLabel="Batal"
+        onConfirm={handleBlast}
+        onCancel={() => setConfirmBlast(false)}
+      />
     </div>
   );
 }

@@ -53,7 +53,7 @@ export default function JobForm({ onSuccess }: JobFormProps) {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label className="label">
-            Nama Perusahaan <span className="text-red-400">*</span>
+            Nama Perusahaan <span className="text-[#FF006E]">*</span>
           </label>
           <input
             type="text"
@@ -66,7 +66,7 @@ export default function JobForm({ onSuccess }: JobFormProps) {
         </div>
         <div>
           <label className="label">
-            Posisi yang Dilamar <span className="text-red-400">*</span>
+            Posisi yang Dilamar <span className="text-[#FF006E]">*</span>
           </label>
           <input
             type="text"
@@ -81,7 +81,7 @@ export default function JobForm({ onSuccess }: JobFormProps) {
 
       <div>
         <label className="label">
-          Email HRD <span className="text-red-400">*</span>
+          Email HRD <span className="text-[#FF006E]">*</span>
         </label>
         <input
           type="email"

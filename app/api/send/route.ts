@@ -163,6 +163,7 @@ Saya sangat berharap dapat berkontribusi dan berkembang bersama tim {{company}}.
 Hormat saya,
 {{senderName}}
 {{senderEmail}}`,
+        isDefault: true,
         updatedAt: new Date().toISOString(),
       };
 
@@ -228,6 +229,48 @@ export async function PUT(req: NextRequest): Promise<NextResponse> {
     console.error("PUT /api/send error:", error);
     return NextResponse.json<ApiResponse>(
       { success: false, error: "Gagal menyimpan template" },
+      { status: 500 }
+    );
+  }
+}
+
+// DELETE /api/send?id=xxx - delete template
+export async function DELETE(req: NextRequest): Promise<NextResponse> {
+  try {
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get("id");
+    if (!id) {
+      return NextResponse.json<ApiResponse>(
+        { success: false, error: "Parameter id wajib diisi" },
+        { status: 400 }
+      );
+    }
+
+    const doc = await db.collection("templates").doc(id).get();
+    if (!doc.exists) {
+      return NextResponse.json<ApiResponse>(
+        { success: false, error: "Template tidak ditemukan" },
+        { status: 404 }
+      );
+    }
+
+    const data = doc.data();
+    if (data?.isDefault) {
+      return NextResponse.json<ApiResponse>(
+        { success: false, error: "Template default tidak bisa dihapus" },
+        { status: 403 }
+      );
+    }
+
+    await db.collection("templates").doc(id).delete();
+    return NextResponse.json<ApiResponse>({
+      success: true,
+      message: "Template berhasil dihapus",
+    });
+  } catch (error) {
+    console.error("DELETE /api/send error:", error);
+    return NextResponse.json<ApiResponse>(
+      { success: false, error: "Gagal menghapus template" },
       { status: 500 }
     );
   }
