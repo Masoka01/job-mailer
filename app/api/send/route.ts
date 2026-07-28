@@ -3,6 +3,25 @@ import { db } from "@/lib/firebase";
 import { sendApplicationEmail } from "@/lib/mailer";
 import type { Job, EmailTemplate, ApiResponse } from "@/types";
 
+const SEED_BODY = `Yth. Tim Rekrutmen {{company}},
+
+Dengan hormat,
+
+Perkenalkan, saya Dimas Mayoni — seorang Web Developer yang berpengalaman membangun solusi digital mulai dari landing page, company profile, hingga aplikasi web interaktif menggunakan teknologi modern seperti React.js, Next.js, Node.js, dan Firebase.
+
+Beberapa project yang pernah saya kerjakan antara lain platform toko online (Louwes Store) dan berbagai aplikasi berbasis web lainnya yang bisa dilihat di portofolio saya:
+https://mayoni-porto.vercel.app/
+
+Saya tertarik melamar posisi {{position}} di {{company}} dan percaya bahwa skill serta pengalaman saya dapat memberikan kontribusi nyata bagi tim Bapak/Ibu.
+
+CV dan portofolio terlampir pada email ini sebagai bahan pertimbangan. Saya sangat terbuka untuk berdiskusi lebih lanjut kapan pun Bapak/Ibu berkenan.
+
+Terima kasih atas perhatian dan waktunya.
+
+Salam,
+Dimas Mayoni
+{{senderEmail}}`;
+
 interface SendResult {
   jobId: string;
   company: string;
@@ -149,20 +168,8 @@ export async function GET(): Promise<NextResponse> {
       // Seed default template
       const defaultTemplate: Omit<EmailTemplate, "id"> = {
         name: "Template Default",
-        subject: "Lamaran Kerja - {{position}} di {{company}}",
-        body: `Yth. HRD {{company}},
-
-Dengan hormat,
-
-Saya bermaksud mengajukan lamaran untuk posisi **{{position}}** di perusahaan {{company}}.
-
-Saya yakin pengalaman dan kemampuan saya sesuai dengan kebutuhan perusahaan. Terlampir saya sertakan CV dan dokumen pendukung lainnya untuk pertimbangan Bapak/Ibu.
-
-Saya sangat berharap dapat berkontribusi dan berkembang bersama tim {{company}}. Atas perhatian dan kesempatan yang diberikan, saya ucapkan terima kasih.
-
-Hormat saya,
-{{senderName}}
-{{senderEmail}}`,
+        subject: "Lamaran {{position}} — Dimas Mayoni",
+        body: SEED_BODY,
         isDefault: true,
         updatedAt: new Date().toISOString(),
       };
@@ -176,7 +183,18 @@ Hormat saya,
       });
     }
 
-    const templates: EmailTemplate[] = snapshot.docs.map((doc) => ({
+    // Migrate existing default template
+    for (const doc of snapshot.docs) {
+      const data = doc.data();
+      if (data.isDefault && data.body !== SEED_BODY) {
+        await doc.ref.update({ body: SEED_BODY, subject: "Lamaran {{position}} — Dimas Mayoni", updatedAt: new Date().toISOString() });
+        break;
+      }
+    }
+
+    // Re-fetch after potential migration
+    const refreshed = await db.collection("templates").orderBy("updatedAt", "desc").get();
+    const templates: EmailTemplate[] = refreshed.docs.map((doc) => ({
       id: doc.id,
       ...(doc.data() as Omit<EmailTemplate, "id">),
     }));

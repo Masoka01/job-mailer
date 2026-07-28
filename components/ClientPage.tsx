@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import toast from "react-hot-toast";
+import { useLocalStorage } from "@/lib/use-local-storage";
 import {
   Mail,
   BriefcaseIcon,
@@ -11,6 +12,7 @@ import {
   FileText,
   CreditCard,
   Plus,
+  Globe,
 } from "lucide-react";
 import JobForm from "@/components/JobForm";
 import JobList from "@/components/JobList";
@@ -35,16 +37,16 @@ const NAV_ITEMS: { id: Tab; label: string; icon: React.ReactNode }[] = [
 ];
 
 export default function ClientPage() {
-  const [tab, setTab] = useState<Tab>("jobs");
+  const [tab, setTabState] = useLocalStorage<Tab>("jobmailer-tab", "jobs");
   const [jobs, setJobs] = useState<Job[]>([]);
   const [templates, setTemplates] = useState<EmailTemplate[]>([]);
-  const [activeTemplate, setActiveTemplate] = useState<EmailTemplate | null>(
-    null,
-  );
+  const [activeTemplate, setActiveTemplate] = useLocalStorage<EmailTemplate | null>("jobmailer-template", null);
   const [loadingJobs, setLoadingJobs] = useState(true);
-  const [showForm, setShowForm] = useState(false);
+  const [showForm, setShowForm] = useLocalStorage("jobmailer-show-form", false);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [cvUploaded, setCvUploaded] = useState(false);
+
+  const setTab = (value: Tab) => setTabState(value);
 
   const fetchJobs = useCallback(async () => {
     setLoadingJobs(true);
@@ -65,7 +67,7 @@ export default function ClientPage() {
       const json = await res.json();
       if (json.success && json.data?.length > 0) {
         setTemplates(json.data);
-        setActiveTemplate(json.data[0]);
+        json.data[0] ? setActiveTemplate(json.data[0]) : void 0;
       }
     } catch {
       toast.error("Gagal memuat template");
@@ -194,6 +196,15 @@ export default function ClientPage() {
             <RefreshCw className="w-3.5 h-3.5" />
             Refresh data
           </button>
+          <a
+            href="https://mayoni-porto.vercel.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full flex items-center gap-2 px-3 py-2 text-[#5D34D0]/60 hover:text-[#00FFFF] hover:bg-[#0080FF]/5 rounded-lg text-xs transition-all duration-200"
+          >
+            <Globe className="w-3.5 h-3.5" />
+            Portfolio
+          </a>
         </div>
       </aside>
 
@@ -265,13 +276,22 @@ export default function ClientPage() {
           ))}
         </nav>
 
-        <div className="px-3 pb-6 pt-3 border-t border-[#0080FF]/20">
+        <div className="px-3 pb-20 pt-3 border-t border-[#0080FF]/20 space-y-1.5">
           {cvUploaded && (
             <div className="flex items-center gap-2 px-4 py-2.5 bg-[#00FFFF]/10 border border-[#00FFFF]/30 rounded-xl">
               <span className="w-1.5 h-1.5 bg-[#00FFFF] rounded-full shadow-[0_0_4px_rgba(0,255,255,0.6)]" />
               <span className="text-xs text-[#00FFFF] font-mono">CV terpasang</span>
             </div>
           )}
+          <a
+            href="https://mayoni-porto.vercel.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 px-4 py-2.5 text-[#5D34D0]/60 hover:text-[#00FFFF] rounded-xl text-xs transition-all duration-200 font-mono"
+          >
+            <Globe className="w-3.5 h-3.5" />
+            Portfolio
+          </a>
         </div>
       </div>
 
@@ -308,7 +328,7 @@ export default function ClientPage() {
           )}
         </div>
 
-        <main className="flex-1 px-4 lg:px-6 xl:px-8 py-5 lg:py-6 pb-24 lg:pb-8">
+        <main className="flex-1 px-4 lg:px-6 xl:px-8 py-5 lg:py-6 pb-20 lg:pb-8">
           {tab === "cv" && <CVUploader />}
 
           {tab === "jobs" && (
@@ -359,6 +379,29 @@ export default function ClientPage() {
           )}
         </main>
       </div>
+
+      {/* ── MOBILE BOTTOM TAB BAR ── */}
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#0D0D1A]/95 backdrop-blur border-t border-[#0080FF]/20">
+        <div className="flex">
+          {NAV_ITEMS.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => setTab(item.id)}
+              className={`flex-1 flex flex-col items-center gap-0.5 py-2 text-[10px] font-mono transition-all duration-200 ${
+                tab === item.id
+                  ? "text-[#0080FF]"
+                  : "text-[#5D34D0]/60"
+              }`}
+            >
+              {item.id === tab && (
+                <span className="absolute top-0 w-8 h-0.5 bg-[#0080FF] rounded-full" />
+              )}
+              {item.icon}
+              {item.label}
+            </button>
+          ))}
+        </div>
+      </nav>
     </div>
   );
 }

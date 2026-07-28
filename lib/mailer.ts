@@ -14,13 +14,15 @@ export const transporter = nodemailer.createTransport({
  * {{company}}, {{position}}, {{hrEmail}}, {{senderName}}, {{senderEmail}}
  */
 function interpolate(text: string, job: Job): string {
-  const senderName =
-    process.env.GMAIL_USER?.split("@")[0]?.replace(/[._]/g, " ") ?? "Pelamar";
+  const displayName =
+    process.env.GMAIL_NAME ??
+    process.env.GMAIL_USER?.split("@")[0]?.replace(/[._]/g, " ") ??
+    "Pelamar";
   return text
     .replace(/\{\{company\}\}/g, job.company)
     .replace(/\{\{position\}\}/g, job.position)
     .replace(/\{\{hrEmail\}\}/g, job.hrEmail)
-    .replace(/\{\{senderName\}\}/g, senderName)
+    .replace(/\{\{senderName\}\}/g, displayName)
     .replace(/\{\{senderEmail\}\}/g, process.env.GMAIL_USER ?? "");
 }
 
@@ -55,8 +57,13 @@ export async function sendApplicationEmail(
     });
   }
 
+  const displayName =
+    process.env.GMAIL_NAME ??
+    process.env.GMAIL_USER?.split("@")[0]?.replace(/[._]/g, " ") ??
+    "Pelamar";
+
   const mailOptions: nodemailer.SendMailOptions = {
-    from: `"${process.env.GMAIL_USER?.split("@")[0]}" <${process.env.GMAIL_USER}>`,
+    from: `"${displayName}" <${process.env.GMAIL_USER}>`,
     to: job.hrEmail,
     subject,
     html: `
