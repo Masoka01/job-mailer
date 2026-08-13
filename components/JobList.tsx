@@ -10,32 +10,35 @@ import {
   SendHorizonal,
   CheckCircle2,
   Loader2,
+  Plus,
+  FileText,
 } from "lucide-react";
 import ConfirmDialog from "@/components/ConfirmDialog";
-import type { Job } from "@/types";
+import type { Job, EmailTemplate } from "@/types";
 
 interface JobListProps {
   jobs: Job[];
   loading: boolean;
-  activeTemplateId?: string;
+  activeTemplate?: EmailTemplate | null;
   onRefresh: () => void;
+  onAddJob?: () => void;
 }
 
 const STATUS_CONFIG = {
   pending: {
     label: "Pending",
-    className: "bg-[#EAB308]/10 text-[#EAB308] border border-[#EAB308]/25",
-    dot: "bg-[#EAB308]",
+    className: "bg-health-warning/10 text-health-warning border border-health-warning/25",
+    dot: "bg-health-warning",
   },
   sent: {
     label: "Terkirim",
-    className: "bg-[#22C55E]/10 text-[#4ADE80] border border-[#22C55E]/25",
-    dot: "bg-[#22C55E]",
+    className: "bg-health-success/10 text-health-success-bright border border-health-success/25",
+    dot: "bg-health-success",
   },
   failed: {
     label: "Gagal",
-    className: "bg-[#EF4444]/10 text-[#F87171] border border-[#EF4444]/25",
-    dot: "bg-[#EF4444]",
+    className: "bg-health-error/10 text-health-error-bright border border-health-error/25",
+    dot: "bg-health-error",
   },
 };
 
@@ -53,12 +56,12 @@ function StatusBadge({ status }: { status: Job["status"] }) {
 
 function JobCard({
   job,
-  activeTemplateId,
+  activeTemplate,
   onRefresh,
   onDeleteRequest,
 }: {
   job: Job;
-  activeTemplateId?: string;
+  activeTemplate?: EmailTemplate | null;
   onRefresh: () => void;
   onDeleteRequest: (job: Job) => void;
 }) {
@@ -66,7 +69,7 @@ function JobCard({
   const [deleting, setDeleting] = useState(false);
 
   const handleSend = async () => {
-    if (!activeTemplateId) {
+    if (!activeTemplate) {
       toast.error("Pilih template di tab 'Template Surat' terlebih dahulu");
       return;
     }
@@ -77,7 +80,7 @@ function JobCard({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           jobIds: [job.id],
-          templateId: activeTemplateId,
+          templateId: activeTemplate.id,
         }),
       });
       const json = await res.json();
@@ -113,7 +116,7 @@ function JobCard({
       className={`bg-health-surface border rounded-lg p-4 transition-colors duration-200 ${
         job.status === "sent"
           ? "border-health-success/30"
-          : "border-health-border hover:border-[#334155]"
+          : "border-health-border hover:border-health-border-strong"
       }`}
     >
       <div className="flex items-start justify-between gap-3">
@@ -140,13 +143,13 @@ function JobCard({
             </span>
           </div>
           {job.sentAt && (
-            <p className="text-[11px] text-[#4ADE80]/70 mt-1.5 flex items-center gap-1">
-              <CheckCircle2 className="w-3 h-3 text-[#22C55E]" />
+            <p className="text-[11px] text-health-success-bright mt-1.5 flex items-center gap-1">
+              <CheckCircle2 className="w-3 h-3 text-health-success" />
               Dikirim {new Date(job.sentAt).toLocaleString("id-ID")}
             </p>
           )}
           {job.notes && (
-            <p className="text-[11px] text-health-slate/80 mt-1 italic truncate">
+            <p className="text-[11px] text-health-slate mt-1 italic truncate">
               {job.notes}
             </p>
           )}
@@ -156,7 +159,7 @@ function JobCard({
           <button
             onClick={() => onDeleteRequest(job)}
             disabled={deleting}
-            className="w-8 h-8 flex items-center justify-center text-health-slate/60 hover:text-[#F87171] hover:bg-[#EF4444]/10 rounded-lg transition-colors disabled:opacity-40"
+            className="w-8 h-8 flex items-center justify-center text-health-slate/60 hover:text-health-error-bright hover:bg-health-error/10 rounded-lg transition-colors disabled:opacity-40"
             title="Hapus"
           >
             {deleting ? (
@@ -169,7 +172,7 @@ function JobCard({
             <button
               onClick={handleSend}
               disabled={sending}
-              className="flex items-center gap-1.5 bg-health-sage/15 hover:bg-health-sage/25 border border-health-sage/30 text-[#10B981] text-xs font-medium px-3 py-1.5 rounded-lg transition-colors duration-200 disabled:opacity-40"
+              className="flex items-center gap-1.5 bg-health-sage/15 hover:bg-health-sage/25 border border-health-sage/30 text-health-sage-bright text-xs font-medium px-3 py-1.5 rounded-lg transition-colors duration-200 disabled:opacity-40"
             >
               {sending ? (
                 <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -190,8 +193,9 @@ function JobCard({
 export default function JobList({
   jobs,
   loading,
-  activeTemplateId,
+  activeTemplate,
   onRefresh,
+  onAddJob,
 }: JobListProps) {
   const [filter, setFilter] = useState<"all" | Job["status"]>("all");
   const [blasting, setBlasting] = useState(false);
@@ -204,7 +208,7 @@ export default function JobList({
 
   const handleBlast = async () => {
     setConfirmBlast(false);
-    if (!activeTemplateId) {
+    if (!activeTemplate) {
       toast.error("Pilih template terlebih dahulu");
       return;
     }
@@ -213,7 +217,7 @@ export default function JobList({
       const res = await fetch("/api/send", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ jobIds: [], templateId: activeTemplateId }),
+        body: JSON.stringify({ jobIds: [], templateId: activeTemplate.id }),
       });
       const json = await res.json();
       if (json.success) {
@@ -248,9 +252,15 @@ export default function JobList({
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center">
         <Building2 className="w-10 h-10 text-health-slate mb-3" />
-        <p className="text-health-slate/60 text-sm">
+        <p className="text-health-slate text-sm">
           Belum ada loker ditambahkan
         </p>
+        {onAddJob && (
+          <button onClick={onAddJob} className="btn-primary mt-5 text-xs px-4 py-2">
+            <Plus className="w-4 h-4" />
+            Tambah loker
+          </button>
+        )}
       </div>
     );
   }
@@ -273,6 +283,20 @@ export default function JobList({
 
   return (
     <div className="space-y-3">
+      {/* Active template indicator */}
+      <div className="flex items-center gap-1.5 text-xs">
+        {activeTemplate ? (
+          <>
+            <FileText className="w-3.5 h-3.5 text-health-sage-bright shrink-0" />
+            <span className="text-health-slate">
+              Template: <span className="text-health-text font-medium">{activeTemplate.name}</span>
+            </span>
+          </>
+        ) : (
+          <span className="text-health-slate">Pilih template di tab Template Surat</span>
+        )}
+      </div>
+
       <div className="flex gap-1 p-1 bg-health-surface border border-health-border rounded-lg w-fit text-xs overflow-x-auto">
         {FILTERS.map((f) => (
           <button
@@ -280,7 +304,7 @@ export default function JobList({
             onClick={() => setFilter(f.id)}
             className={`px-3 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors duration-200 ${
               filter === f.id
-                ? "bg-health-sage/15 text-[#10B981]"
+                ? "bg-health-sage/15 text-health-sage-bright"
                 : "text-health-slate hover:text-health-text"
             }`}
           >
@@ -291,7 +315,7 @@ export default function JobList({
 
       {filtered.length === 0 ? (
         <div className="bg-health-surface border border-health-border rounded-lg p-8 text-center">
-          <p className="text-health-slate/60 text-sm">
+          <p className="text-health-slate text-sm">
             Tidak ada loker dengan status ini
           </p>
         </div>
@@ -301,7 +325,7 @@ export default function JobList({
             <JobCard
               key={job.id}
               job={job}
-              activeTemplateId={activeTemplateId}
+              activeTemplate={activeTemplate}
               onRefresh={onRefresh}
               onDeleteRequest={setDeleteJob}
             />
@@ -313,7 +337,7 @@ export default function JobList({
         <button
           onClick={() => setConfirmBlast(true)}
           disabled={blasting}
-          className="w-full flex items-center justify-center gap-2 bg-health-sage hover:bg-[#047857] text-white text-sm font-medium py-3 rounded-lg transition-colors duration-200 disabled:opacity-40 mt-2"
+          className="w-full flex items-center justify-center gap-2 bg-health-sage hover:bg-health-sage-dark text-white text-sm font-medium py-3 rounded-lg transition-colors duration-200 disabled:opacity-40 mt-2"
         >
           {blasting ? (
             <Loader2 className="w-4 h-4 animate-spin" />
@@ -356,6 +380,7 @@ export default function JobList({
         message={`Kirim email ke semua ${pendingJobs.length} loker pending?`}
         confirmLabel="Kirim"
         cancelLabel="Batal"
+        variant="primary"
         onConfirm={handleBlast}
         onCancel={() => setConfirmBlast(false)}
       />

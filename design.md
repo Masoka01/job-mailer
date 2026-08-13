@@ -8,14 +8,17 @@ Verdana Health is a calm, trustworthy design system built for digital health pla
 
 ## Colors
 
-- **Primary Navy** (#0F172A): Primary actions, strong headers
-- **Secondary Slate** (#64748B): Secondary text, borders
-- **Tertiary Sage** (#059669): Links, CTAs, highlights
-- **Background** (#F8FAFC): Page background
-- **Surface Default** (#FFFFFF): Card backgrounds
-- **Success** (#22C55E): Confirmed, healthy range
+Dark navy palette — light text on deep navy, sage reserved for interactive elements and positive states.
+
+- **Background** (#0B1220): Page background
+- **Surface** (#0F172A): Cards, inputs, panels
+- **Border** (#1E293B): Default borders; **Border Strong** (#334155): Hover borders, scrollbar
+- **Text** (#E2E8F0): Primary text
+- **Slate** (#94A3B8): Secondary text, muted labels (AA on #0B1220)
+- **Sage** (#059669): Primary actions, CTAs; **Sage Bright** (#10B981): Active states, highlights; **Sage Dark** (#047857): Action hover
+- **Success** (#22C55E): Confirmed; **Success Bright** (#4ADE80): Success text on dark
 - **Warning** (#EAB308): Pending results, caution
-- **Error** (#EF4444): Critical, out of range
+- **Error** (#EF4444): Critical; **Error Bright** (#F87171): Error text on dark; **Error Dark** (#DC2626): Destructive hover
 - **Info** (#0EA5E9): Informational, new feature
 
 ## Typography
@@ -122,7 +125,7 @@ Sizes: sm (6px 14px, 14px, 32px), md (10px 22px, 14px, 42px), lg (12px 28px, 16p
 
 ## Do's and Don'ts
 
-1. **Do** use the Navy + White contrast as the primary visual rhythm; Sage green is reserved for interactive elements and positive states only.
+1. **Do** use the deep navy background + light text as the primary visual rhythm; Sage green is reserved for interactive elements and positive states only.
 2. **Do** lean on generous whitespace and breathing room — health interfaces should never feel cramped.
 3. **Do** use softer radius (8px) consistently; rounded corners convey approachability and calm.
 4. **Don't** introduce harsh neons or saturated accent colors — Verdana Health is calming and clinical.

@@ -68,7 +68,7 @@ export default function CVUploader() {
     <div className="max-w-lg space-y-4">
       <div className="card p-6 space-y-5">
         <div className="flex items-center gap-2">
-          <FileText className="w-5 h-5 text-[#10B981]" />
+          <FileText className="w-5 h-5 text-health-sage-bright" />
           <h2 className="font-sans text-base font-semibold text-health-text">
             CV Saya
           </h2>
@@ -80,14 +80,14 @@ export default function CVUploader() {
           <div className="flex items-center justify-between p-4 bg-health-bg rounded-lg border border-health-border">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 bg-health-sage/10 border border-health-sage/30 rounded-lg flex items-center justify-center">
-                <FileText className="w-5 h-5 text-[#10B981]" />
+                <FileText className="w-5 h-5 text-health-sage-bright" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
                   <p className="text-sm font-medium text-health-text truncate max-w-[180px]">
                     {cvInfo.name}
                   </p>
-                  <CheckCircle2 className="w-3.5 h-3.5 text-[#22C55E] shrink-0" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-health-success shrink-0" />
                 </div>
                 <p className="text-xs text-health-slate mt-0.5">
                   {formatSize(cvInfo.size)} ·{" "}
@@ -97,16 +97,16 @@ export default function CVUploader() {
             </div>
             <button
               onClick={handleDelete}
-              className="p-2 text-[#F87171]/60 hover:text-[#F87171] hover:bg-[#EF4444]/10 rounded-lg transition-colors"
+              className="p-2 text-health-error-bright/60 hover:text-health-error-bright hover:bg-health-error/10 rounded-lg transition-colors"
               title="Hapus CV"
             >
               <Trash2 className="w-4 h-4" />
             </button>
           </div>
         ) : (
-          <div className="p-8 bg-health-bg rounded-lg border border-dashed border-[#334155] text-center">
+          <div className="p-8 bg-health-bg rounded-lg border border-dashed border-health-border-strong text-center">
             <Upload className="w-8 h-8 text-health-slate mx-auto mb-2" />
-            <p className="text-sm text-health-slate/60">
+            <p className="text-sm text-health-slate">
               Belum ada CV yang diupload
             </p>
           </div>
@@ -124,7 +124,7 @@ export default function CVUploader() {
               className="hidden"
             />
           </label>
-          <p className="text-xs text-health-slate/60">PDF, maks. 500 KB</p>
+          <p className="text-xs text-health-slate">PDF, maks. 500 KB</p>
         </div>
       </div>
     </div>

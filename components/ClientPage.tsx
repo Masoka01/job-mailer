@@ -48,7 +48,7 @@ function StatCard({
       <p className={`text-sm font-semibold font-mono ${valueClass ?? "text-health-text"}`}>
         {value}
       </p>
-      <p className="text-[10px] text-health-slate mt-0.5 uppercase tracking-wider">
+      <p className="text-[11px] text-health-slate mt-0.5 uppercase tracking-wider">
         {label}
       </p>
     </div>
@@ -138,9 +138,9 @@ export default function ClientPage() {
           {/* Stats grid */}
           <div className="grid grid-cols-2 gap-1.5">
             <StatCard label="Total" value={jobs.length} />
-            <StatCard label="Terkirim" value={sentCount} valueClass="text-[#4ADE80]" />
-            <StatCard label="Pending" value={pendingCount} valueClass="text-[#EAB308]" />
-            <StatCard label="Gagal" value={failedCount} valueClass="text-[#F87171]" />
+            <StatCard label="Terkirim" value={sentCount} valueClass="text-health-success-bright" />
+            <StatCard label="Pending" value={pendingCount} valueClass="text-health-warning" />
+            <StatCard label="Gagal" value={failedCount} valueClass="text-health-error-bright" />
           </div>
         </div>
 
@@ -152,7 +152,7 @@ export default function ClientPage() {
               onClick={() => setTab(item.id)}
               className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm transition-colors duration-200 ${
                 tab === item.id
-                  ? "bg-health-sage/15 text-[#10B981]"
+                  ? "bg-health-sage/15 text-health-sage-bright"
                   : "text-health-slate hover:text-health-text hover:bg-white/5"
               }`}
             >
@@ -167,12 +167,12 @@ export default function ClientPage() {
           {cvUploaded && (
             <div className="flex items-center gap-2 px-3 py-2 bg-health-success/10 border border-health-success/25 rounded-lg">
               <span className="w-1.5 h-1.5 bg-health-success rounded-full shrink-0" />
-              <span className="text-[11px] text-[#4ADE80]">CV terpasang</span>
+              <span className="text-[11px] text-health-success-bright">CV terpasang</span>
             </div>
           )}
           <button
             onClick={fetchJobs}
-            className="w-full flex items-center gap-2 px-3 py-2 text-health-slate hover:text-[#10B981] hover:bg-white/5 rounded-lg text-xs transition-colors duration-200"
+            className="w-full flex items-center gap-2 px-3 py-2 text-health-slate hover:text-health-sage-bright hover:bg-white/5 rounded-lg text-xs transition-colors duration-200"
           >
             <RefreshCw className="w-3.5 h-3.5" />
             Refresh data
@@ -181,7 +181,7 @@ export default function ClientPage() {
             href="https://mayoni-porto.vercel.app/"
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full flex items-center gap-2 px-3 py-2 text-health-slate hover:text-[#10B981] hover:bg-white/5 rounded-lg text-xs transition-colors duration-200"
+            className="w-full flex items-center gap-2 px-3 py-2 text-health-slate hover:text-health-sage-bright hover:bg-white/5 rounded-lg text-xs transition-colors duration-200"
           >
             <Globe className="w-3.5 h-3.5" />
             Portfolio
@@ -199,9 +199,18 @@ export default function ClientPage() {
               </div>
               <span className="font-sans font-semibold text-white text-sm">JobMailer</span>
             </div>
+            {tab === "jobs" && (
+              <button
+                onClick={() => setShowForm(true)}
+                className="w-9 h-9 flex items-center justify-center text-health-slate hover:text-health-sage-bright hover:bg-white/5 rounded-lg transition-colors"
+                aria-label="Tambah loker"
+              >
+                <Plus className="w-4 h-4" />
+              </button>
+            )}
             <button
               onClick={fetchJobs}
-              className="w-9 h-9 flex items-center justify-center text-health-slate hover:text-[#10B981] hover:bg-white/5 rounded-lg transition-colors"
+              className="w-9 h-9 flex items-center justify-center text-health-slate hover:text-health-sage-bright hover:bg-white/5 rounded-lg transition-colors"
               aria-label="Refresh data"
             >
               <RefreshCw className="w-4 h-4" />
@@ -229,15 +238,15 @@ export default function ClientPage() {
               {/* Mobile stats strip */}
               <div className="lg:hidden grid grid-cols-4 gap-2">
                 <StatCard label="Total" value={jobs.length} />
-                <StatCard label="Terkirim" value={sentCount} valueClass="text-[#4ADE80]" />
-                <StatCard label="Pending" value={pendingCount} valueClass="text-[#EAB308]" />
-                <StatCard label="Gagal" value={failedCount} valueClass="text-[#F87171]" />
+                <StatCard label="Terkirim" value={sentCount} valueClass="text-health-success-bright" />
+                <StatCard label="Pending" value={pendingCount} valueClass="text-health-warning" />
+                <StatCard label="Gagal" value={failedCount} valueClass="text-health-error-bright" />
               </div>
 
               {!showForm && (
                 <button
                   onClick={() => setShowForm(true)}
-                  className="lg:hidden flex items-center gap-2 w-full justify-center bg-health-surface hover:bg-white/5 border border-health-border text-[#10B981] text-sm font-medium px-4 py-3 rounded-lg transition-colors duration-200"
+                  className="lg:hidden flex items-center gap-2 w-full justify-center bg-health-sage hover:bg-health-sage-dark text-white text-sm font-medium px-4 py-3 rounded-lg transition-colors duration-200"
                 >
                   <Plus className="w-4 h-4" />
                   Tambah loker baru
@@ -270,8 +279,9 @@ export default function ClientPage() {
               <JobList
                 jobs={jobs}
                 loading={loadingJobs}
-                activeTemplateId={activeTemplate?.id}
+                activeTemplate={activeTemplate}
                 onRefresh={fetchJobs}
+                onAddJob={() => setShowForm(true)}
               />
             </div>
           )}
@@ -299,7 +309,7 @@ export default function ClientPage() {
               key={item.id}
               onClick={() => setTab(item.id)}
               className={`relative flex-1 flex flex-col items-center gap-0.5 py-2 text-[10px] transition-colors duration-200 ${
-                tab === item.id ? "text-[#10B981]" : "text-health-slate"
+                tab === item.id ? "text-health-sage-bright" : "text-health-slate"
               }`}
             >
               {item.id === tab && (

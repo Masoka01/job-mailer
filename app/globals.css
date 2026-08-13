@@ -7,8 +7,8 @@
 
   body {
     min-height: 100vh;
-    background: #0B1220;
-    color: #E2E8F0;
+    background-color: theme(colors.health.bg);
+    color: theme(colors.health.text);
     -webkit-font-smoothing: antialiased;
   }
 }
@@ -31,15 +31,15 @@
   }
 
   .btn-primary {
-    @apply flex items-center gap-2 bg-health-sage hover:bg-[#047857] text-white font-medium text-sm px-5 py-2.5 rounded-lg transition-colors duration-200 disabled:opacity-40 disabled:cursor-not-allowed;
+    @apply flex items-center gap-2 bg-health-sage hover:bg-health-sage-dark text-white font-medium text-sm px-5 py-2.5 rounded-lg transition-colors duration-200 disabled:opacity-40 disabled:cursor-not-allowed;
   }
 
   .btn-secondary {
-    @apply flex items-center gap-2 border border-[#334155] text-health-text hover:bg-white/5 font-medium text-sm px-4 py-2 rounded-lg transition-colors duration-200 disabled:opacity-40 disabled:cursor-not-allowed;
+    @apply flex items-center gap-2 border border-health-border-strong text-health-text hover:bg-white/5 font-medium text-sm px-4 py-2 rounded-lg transition-colors duration-200 disabled:opacity-40 disabled:cursor-not-allowed;
   }
 }
 
 ::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: #0B1220; }
-::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #64748B; }
+::-webkit-scrollbar-track { background: theme(colors.health.bg); }
+::-webkit-scrollbar-thumb { background: theme(colors.health.border-strong); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: theme(colors.health.slate); }

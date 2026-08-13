@@ -127,8 +127,8 @@ export default function TemplateEditor({
             key={t.id}
             className={`group w-full text-left px-3.5 py-3 rounded-lg border text-sm transition-colors duration-200 cursor-pointer ${
               activeTemplate?.id === t.id && !isNew
-                ? "bg-health-sage/10 border-health-sage/40 text-[#10B981]"
-                : "bg-health-surface border-health-border text-health-muted hover:border-[#334155] hover:text-health-text"
+                ? "bg-health-sage/10 border-health-sage/40 text-health-sage-bright"
+                : "bg-health-surface border-health-border text-health-muted hover:border-health-border-strong hover:text-health-text"
             }`}
             onClick={() => {
               setIsNew(false);
@@ -147,7 +147,7 @@ export default function TemplateEditor({
                     e.stopPropagation();
                     setDeleteTarget(t);
                   }}
-                  className="opacity-0 group-hover:opacity-100 p-1 text-health-slate/60 hover:text-[#F87171] transition-colors"
+                  className="opacity-0 group-hover:opacity-100 p-1 text-health-slate/60 hover:text-health-error-bright transition-colors"
                   title="Hapus template"
                 >
                   <Trash2 className="w-3.5 h-3.5" />
@@ -164,9 +164,9 @@ export default function TemplateEditor({
         {/* Variable hint */}
         <div className="bg-health-sage/5 border border-health-sage/20 rounded-lg p-4">
           <div className="flex items-start gap-2.5">
-            <Info className="w-4 h-4 text-[#10B981] mt-0.5 flex-shrink-0" />
+            <Info className="w-4 h-4 text-health-sage-bright mt-0.5 flex-shrink-0" />
             <div>
-              <p className="text-xs font-semibold text-[#10B981] mb-2.5 uppercase tracking-wider">
+              <p className="text-xs font-semibold text-health-sage-bright mb-2.5 uppercase tracking-wider">
                 Variabel tersedia — diganti otomatis saat kirim:
               </p>
               <div className="flex flex-wrap gap-2">
@@ -175,7 +175,7 @@ export default function TemplateEditor({
                     key={v.var}
                     className="text-xs flex items-center gap-1.5"
                   >
-                    <code className="bg-health-bg border border-health-sage/30 text-[#10B981] px-1.5 py-0.5 rounded-md font-mono text-[11px]">
+                    <code className="bg-health-bg border border-health-sage/30 text-health-sage-bright px-1.5 py-0.5 rounded-md font-mono text-[11px]">
                       {v.var}
                     </code>
                     <span className="text-health-muted">{v.desc}</span>
