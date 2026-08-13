@@ -7,82 +7,39 @@
 
   body {
     min-height: 100vh;
-    background: #0D0D1A;
-    color: #C0C0C0;
+    background: #0B1220;
+    color: #E2E8F0;
     -webkit-font-smoothing: antialiased;
-    position: relative;
   }
-}
-
-#crt-overlay {
-  pointer-events: none;
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 2px,
-    rgba(0, 0, 0, 0.08) 2px,
-    rgba(0, 0, 0, 0.08) 4px
-  );
-}
-
-@layer utilities {
-  .neon-text-blue {
-    text-shadow: 0 0 7px rgba(0,128,255,0.6), 0 0 10px rgba(0,128,255,0.4);
-  }
-  .neon-text-pink {
-    text-shadow: 0 0 7px rgba(255,0,110,0.6), 0 0 10px rgba(255,0,110,0.4);
-  }
-  .neon-text-cyan {
-    text-shadow: 0 0 7px rgba(0,255,255,0.6), 0 0 10px rgba(0,255,255,0.4);
-  }
-}
-
-@keyframes glitch-skew {
-  0% { transform: skew(0deg); }
-  20% { transform: skew(-2deg); }
-  40% { transform: skew(0.5deg); }
-  60% { transform: skew(-1deg); }
-  80% { transform: skew(1deg); }
-  100% { transform: skew(0deg); }
 }
 
 @layer components {
   .input {
     @apply w-full px-3.5 py-2.5
-           bg-[#0D0D1A] border border-[#0080FF]/30 rounded-lg
-           text-sm text-[#C0C0C0] placeholder-[#5D34D0]/50 font-mono
-           focus:outline-none focus:border-[#00FFFF] focus:shadow-[0_0_8px_rgba(0,255,255,0.2)]
+           bg-health-surface border border-health-border rounded-lg
+           text-sm text-health-text placeholder-health-slate
+           focus:outline-none focus:border-health-sage focus:ring-2 focus:ring-health-sage/25
            transition-all duration-200;
   }
 
   .label {
-    @apply block text-xs font-medium text-[#FF006E] mb-1.5 font-mono tracking-wider uppercase;
+    @apply block text-sm font-medium text-health-muted mb-1.5;
   }
 
   .card {
-    @apply bg-[#1A1A2E] rounded-xl border border-[#0080FF]/20;
+    @apply bg-health-surface rounded-lg border border-health-border;
   }
 
   .btn-primary {
-    @apply flex items-center gap-2 bg-[#FF006E] hover:bg-[#FF006E]/80 text-black font-mono font-semibold text-sm px-5 py-2.5 rounded-lg transition-all duration-200;
-    box-shadow: 0 0 12px rgba(255,0,110,0.3);
-  }
-  .btn-primary:hover {
-    box-shadow: 0 0 20px rgba(255,0,110,0.5);
+    @apply flex items-center gap-2 bg-health-sage hover:bg-[#047857] text-white font-medium text-sm px-5 py-2.5 rounded-lg transition-colors duration-200 disabled:opacity-40 disabled:cursor-not-allowed;
   }
 
   .btn-secondary {
-    @apply flex items-center gap-2 border border-[#0080FF]/50 text-[#0080FF] hover:bg-[#0080FF]/10 font-mono text-sm px-4 py-2 rounded-lg transition-all duration-200;
-  }
-  .btn-secondary:hover {
-    box-shadow: 0 0 10px rgba(0,128,255,0.2);
+    @apply flex items-center gap-2 border border-[#334155] text-health-text hover:bg-white/5 font-medium text-sm px-4 py-2 rounded-lg transition-colors duration-200 disabled:opacity-40 disabled:cursor-not-allowed;
   }
 }
 
 ::-webkit-scrollbar { width: 6px; height: 6px; }
-::-webkit-scrollbar-track { background: #0D0D1A; }
-::-webkit-scrollbar-thumb { background: #5D34D0; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #0080FF; }
+::-webkit-scrollbar-track { background: #0B1220; }
+::-webkit-scrollbar-thumb { background: #334155; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #64748B; }

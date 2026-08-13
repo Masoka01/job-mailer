@@ -26,19 +26,22 @@ export default function ConfirmDialog({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       <div className="fixed inset-0 bg-black/60" onClick={onCancel} />
-      <div className="relative bg-[#1A1A2E] border border-[#FF006E]/30 rounded-xl p-6 w-full max-w-sm mx-4 shadow-[0_0_30px_rgba(255,0,110,0.15)]">
+      <div className="relative bg-health-surface border border-[#334155] rounded-xl p-6 w-full max-w-sm mx-4 shadow-[0_8px_32px_rgba(0,0,0,0.35)]">
         <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 bg-[#FF006E]/10 rounded-lg flex items-center justify-center">
-            <AlertTriangle className="w-5 h-5 text-[#FF006E]" />
+          <div className="w-10 h-10 bg-[#EF4444]/10 rounded-lg flex items-center justify-center">
+            <AlertTriangle className="w-5 h-5 text-[#F87171]" />
           </div>
-          <h3 className="text-sm font-semibold text-[#C0C0C0] font-mono">{title}</h3>
+          <h3 className="font-sans text-sm font-semibold text-health-text">{title}</h3>
         </div>
-        <p className="text-sm text-[#5D34D0] mb-6 font-mono">{message}</p>
+        <p className="text-sm text-health-muted mb-6">{message}</p>
         <div className="flex justify-end gap-3">
           <button onClick={onCancel} className="btn-secondary text-xs px-4 py-2">
             {cancelLabel}
           </button>
-          <button onClick={onConfirm} className="btn-primary text-xs px-4 py-2 bg-[#FF006E] hover:bg-[#FF006E]/80">
+          <button
+            onClick={onConfirm}
+            className="btn-primary text-xs px-4 py-2 !bg-[#EF4444] hover:!bg-[#DC2626]"
+          >
             {confirmLabel}
           </button>
         </div>

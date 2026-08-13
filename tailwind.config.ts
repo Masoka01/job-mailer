@@ -9,29 +9,25 @@ const config: Config = {
   theme: {
     extend: {
       fontFamily: {
-        sans: ["ui-monospace", "SFMono-Regular", "monospace"],
-        mono: ["ui-monospace", "SFMono-Regular", "monospace"],
+        sans: ["var(--font-plus-jakarta)", "ui-sans-serif", "system-ui", "sans-serif"],
+        body: ["var(--font-dm-sans)", "ui-sans-serif", "system-ui", "sans-serif"],
+        mono: ["var(--font-fira-code)", "ui-monospace", "SFMono-Regular", "monospace"],
       },
       colors: {
-        neon: {
-          blue: "#0080FF",
-          pink: "#FF006E",
-          cyan: "#00FFFF",
-          purple: "#5D34D0",
-          silver: "#C0C0C0",
-          gold: "#FFD700",
+        health: {
+          bg: "#0B1220",
+          surface: "#0F172A",
+          border: "#1E293B",
+          slate: "#64748B",
+          sage: "#059669",
+          "sage-bright": "#10B981",
+          text: "#E2E8F0",
+          muted: "#94A3B8",
+          success: "#22C55E",
+          warning: "#EAB308",
+          error: "#EF4444",
+          info: "#0EA5E9",
         },
-        deep: {
-          black: "#1A1A2E",
-          dark: "#0D0D1A",
-        },
-      },
-      boxShadow: {
-        neon: "0 0 10px rgba(0,128,255,0.3), 0 0 20px rgba(0,128,255,0.15)",
-        "neon-pink":
-          "0 0 10px rgba(255,0,110,0.3), 0 0 20px rgba(255,0,110,0.15)",
-        "neon-cyan":
-          "0 0 10px rgba(0,255,255,0.3), 0 0 20px rgba(0,255,255,0.15)",
       },
     },
   },
