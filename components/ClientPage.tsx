@@ -11,11 +11,13 @@ import {
   CreditCard,
   Plus,
   Globe,
+  LogOut,
 } from "lucide-react";
 import JobForm from "@/components/JobForm";
 import JobList from "@/components/JobList";
 import TemplateEditor from "@/components/TemplateEditor";
 import CVUploader from "@/components/CVUploader";
+import LoginForm from "@/components/LoginForm";
 import type { Job, EmailTemplate } from "@/types";
 
 type Tab = "jobs" | "template" | "cv";
@@ -63,6 +65,14 @@ export default function ClientPage() {
   const [loadingJobs, setLoadingJobs] = useState(true);
   const [showForm, setShowForm] = useLocalStorage("jobmailer-show-form", false);
   const [cvUploaded, setCvUploaded] = useState(false);
+  const [authenticated, setAuthenticated] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    fetch("/api/auth/check")
+      .then((r) => r.json())
+      .then((j) => setAuthenticated(!!j.authenticated))
+      .catch(() => setAuthenticated(false));
+  }, []);
 
   const setTab = (value: Tab) => setTabState(value);
 
@@ -104,6 +114,14 @@ export default function ClientPage() {
     fetchTemplates();
   }, [fetchTemplates]);
 
+  const handleLogout = async () => {
+    try {
+      await fetch("/api/auth/logout", { method: "POST" });
+    } finally {
+      setAuthenticated(false);
+    }
+  };
+
   useEffect(() => {
     fetchJobs();
     fetchTemplates();
@@ -119,6 +137,18 @@ export default function ClientPage() {
     template: "Template surat",
     cv: "CV saya",
   };
+
+  if (authenticated === null) {
+    return (
+      <div className="min-h-screen bg-health-bg flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-health-sage border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (!authenticated) {
+    return <LoginForm onSuccess={() => setAuthenticated(true)} />;
+  }
 
   return (
     <div className="min-h-screen bg-health-bg flex">
@@ -186,6 +216,13 @@ export default function ClientPage() {
             <Globe className="w-3.5 h-3.5" />
             Portfolio
           </a>
+          <button
+            onClick={handleLogout}
+            className="w-full flex items-center gap-2 px-3 py-2 text-health-slate hover:text-health-error-bright hover:bg-white/5 rounded-lg text-xs transition-colors duration-200"
+          >
+            <LogOut className="w-3.5 h-3.5" />
+            Keluar
+          </button>
         </div>
       </aside>
 
