@@ -79,6 +79,7 @@ function JobCard({
 }) {
   const [sending, setSending] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [markingSent, setMarkingSent] = useState(false);
 
   const handleSend = async () => {
     if (!activeTemplate) {
@@ -127,6 +128,30 @@ function JobCard({
     if (phone.startsWith("0")) phone = "62" + phone.slice(1);
     const url = `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
     window.open(url, "_blank");
+  };
+
+  const handleMarkSent = async () => {
+    setMarkingSent(true);
+    try {
+      const res = await fetch("/api/jobs", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: job.id,
+          status: "sent",
+          sentAt: new Date().toISOString(),
+        }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        toast.success("Loker ditandai terkirim");
+        onRefresh();
+      } else toast.error(json.error ?? "Gagal menandai terkirim");
+    } catch {
+      toast.error("Terjadi kesalahan");
+    } finally {
+      setMarkingSent(false);
+    }
   };
 
   const handleDelete = async () => {
@@ -212,6 +237,23 @@ function JobCard({
             >
               <MessageCircle className="w-3.5 h-3.5" />
               <span className="hidden sm:inline">Kirim WA</span>
+            </button>
+          )}
+          {job.whatsapp && job.status !== "sent" && (
+            <button
+              onClick={handleMarkSent}
+              disabled={markingSent}
+              className="flex items-center gap-1.5 bg-health-surface hover:bg-health-border/40 border border-health-border text-health-text-muted text-xs font-medium px-3 py-1.5 rounded-lg transition-colors duration-200 disabled:opacity-40"
+              title="Tandai sudah terkirim via WA"
+            >
+              {markingSent ? (
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+              ) : (
+                <CheckCircle2 className="w-3.5 h-3.5" />
+              )}
+              <span className="hidden sm:inline">
+                {markingSent ? "Menandai..." : "Tandai terkirim"}
+              </span>
             </button>
           )}
           {job.status !== "sent" && job.hrEmail && (
