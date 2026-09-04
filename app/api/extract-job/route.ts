@@ -39,6 +39,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         ],
         max_tokens: 500,
         temperature: 0.1,
+        reasoning_effort: "none",
+        response_format: { type: "json_object" },
       }),
     });
 
