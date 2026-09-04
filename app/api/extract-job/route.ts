@@ -37,9 +37,8 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             ],
           },
         ],
-        max_tokens: 300,
+        max_tokens: 500,
         temperature: 0.1,
-        response_format: { type: "json_object" },
       }),
     });
 
@@ -56,13 +55,15 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       return NextResponse.json({ success: false, error: "Tidak ada response dari AI" }, { status: 500 });
     }
 
-    // Parse JSON from response (handle markdown code blocks + thinking tags)
-    const jsonStr = content
+    // Parse JSON from response (handle markdown code blocks + thinking tags + extra text)
+    const cleaned = content
       .replace(/```json\n?/g, "")
       .replace(/```\n?/g, "")
-      .replace(/<think>[\s\S]*?<\/think>/g, "")
+      .replace(/ thinking[\s\S]*?<\/think>/g, "")
       .trim();
-    const result = JSON.parse(jsonStr);
+    // Extract the first JSON object from the response
+    const jsonMatch = cleaned.match(/\{[\s\S]*\}/);
+    const result = jsonMatch ? JSON.parse(jsonMatch[0]) : {};
 
     return NextResponse.json({
       success: true,
