@@ -103,8 +103,12 @@ export default function JobForm({ onSuccess }: JobFormProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!company || !position || !hrEmail) {
-      toast.error("Mohon isi semua field yang wajib");
+    if (!company || !position) {
+      toast.error("Mohon isi nama perusahaan dan posisi");
+      return;
+    }
+    if (!hrEmail && !whatsapp) {
+      toast.error("Isi email HRD atau nomor WhatsApp minimal satu");
       return;
     }
 
@@ -224,7 +228,7 @@ export default function JobForm({ onSuccess }: JobFormProps) {
 
       <div>
         <label className="label">
-          Email HRD <span className="text-health-error-bright">*</span>
+          Email HRD <span className="text-health-text-muted">(opsional jika ada WA)</span>
         </label>
         <input
           type="email"
@@ -232,7 +236,6 @@ export default function JobForm({ onSuccess }: JobFormProps) {
           onChange={(e) => setHrEmail(e.target.value)}
           placeholder="hrd@perusahaan.com"
           className="input"
-          required
         />
       </div>
 

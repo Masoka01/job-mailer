@@ -38,9 +38,9 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     const notes = (formData.get("notes") as string) ?? "";
     const pdfFile = formData.get("pdf") as File | null;
 
-    if (!company || !position || !hrEmail) {
+    if (!company || !position || (!hrEmail && !whatsapp)) {
       return NextResponse.json<ApiResponse>(
-        { success: false, error: "Field company, position, hrEmail wajib diisi" },
+        { success: false, error: "Field company, position wajib diisi, dan minimal email atau whatsapp" },
         { status: 400 }
       );
     }

@@ -165,10 +165,12 @@ function JobCard({
               <Briefcase className="w-3 h-3" />
               {job.position}
             </span>
-            <span className="flex items-center gap-1.5">
-              <Mail className="w-3 h-3" />
-              {job.hrEmail}
-            </span>
+            {job.hrEmail && (
+              <span className="flex items-center gap-1.5">
+                <Mail className="w-3 h-3" />
+                {job.hrEmail}
+              </span>
+            )}
           </div>
           {job.sentAt && (
             <p className="text-[11px] text-health-success-bright mt-1.5 flex items-center gap-1">
@@ -206,7 +208,7 @@ function JobCard({
               <span className="hidden sm:inline">Kirim WA</span>
             </button>
           )}
-          {job.status !== "sent" && (
+          {job.status !== "sent" && job.hrEmail && (
             <button
               onClick={handleSend}
               disabled={sending}
