@@ -12,14 +12,24 @@ import {
   Loader2,
   Plus,
   FileText,
+  MessageCircle,
 } from "lucide-react";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import type { Job, EmailTemplate } from "@/types";
+
+interface WaTemplate {
+  id: string;
+  name: string;
+  body: string;
+  updatedAt: string;
+  isDefault?: boolean;
+}
 
 interface JobListProps {
   jobs: Job[];
   loading: boolean;
   activeTemplate?: EmailTemplate | null;
+  activeWaTemplate?: WaTemplate | null;
   onRefresh: () => void;
   onAddJob?: () => void;
 }
@@ -57,11 +67,13 @@ function StatusBadge({ status }: { status: Job["status"] }) {
 function JobCard({
   job,
   activeTemplate,
+  activeWaTemplate,
   onRefresh,
   onDeleteRequest,
 }: {
   job: Job;
   activeTemplate?: EmailTemplate | null;
+  activeWaTemplate?: WaTemplate | null;
   onRefresh: () => void;
   onDeleteRequest: (job: Job) => void;
 }) {
@@ -93,6 +105,22 @@ function JobCard({
     } finally {
       setSending(false);
     }
+  };
+
+  const handleSendWa = () => {
+    if (!job.whatsapp) return;
+    if (!activeWaTemplate) {
+      toast.error("Pilih template WA di tab 'Template Surat' terlebih dahulu");
+      return;
+    }
+    let text = activeWaTemplate.body
+      .replace(/\{\{company\}\}/g, job.company)
+      .replace(/\{\{position\}\}/g, job.position)
+      .replace(/\{\{senderName\}\}/g, "Dimas Mayoni");
+    let phone = job.whatsapp.replace(/\D/g, "");
+    if (phone.startsWith("0")) phone = "62" + phone.slice(1);
+    const url = `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
+    window.open(url, "_blank");
   };
 
   const handleDelete = async () => {
@@ -168,6 +196,16 @@ function JobCard({
               <Trash2 className="w-3.5 h-3.5" />
             )}
           </button>
+          {job.whatsapp && (
+            <button
+              onClick={handleSendWa}
+              className="flex items-center gap-1.5 bg-health-success/15 hover:bg-health-success/25 border border-health-success/30 text-health-success-bright text-xs font-medium px-3 py-1.5 rounded-lg transition-colors duration-200"
+              title={`Kirim WA ke ${job.whatsapp}`}
+            >
+              <MessageCircle className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">Kirim WA</span>
+            </button>
+          )}
           {job.status !== "sent" && (
             <button
               onClick={handleSend}
@@ -194,6 +232,7 @@ export default function JobList({
   jobs,
   loading,
   activeTemplate,
+  activeWaTemplate,
   onRefresh,
   onAddJob,
 }: JobListProps) {
@@ -326,6 +365,7 @@ export default function JobList({
               key={job.id}
               job={job}
               activeTemplate={activeTemplate}
+              activeWaTemplate={activeWaTemplate}
               onRefresh={onRefresh}
               onDeleteRequest={setDeleteJob}
             />

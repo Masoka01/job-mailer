@@ -12,6 +12,7 @@ export default function JobForm({ onSuccess }: JobFormProps) {
   const [company, setCompany] = useState("");
   const [position, setPosition] = useState("");
   const [hrEmail, setHrEmail] = useState("");
+  const [whatsapp, setWhatsapp] = useState("");
   const [loading, setLoading] = useState(false);
   const [scanLoading, setScanLoading] = useState(false);
   const [scanPreview, setScanPreview] = useState<string | null>(null);
@@ -61,6 +62,7 @@ export default function JobForm({ onSuccess }: JobFormProps) {
         setCompany(json.data.company || "");
         setPosition(json.data.position || "");
         setHrEmail(json.data.email || "");
+        setWhatsapp(json.data.whatsapp || "");
         setScanSuccess(true);
         toast.success("Data berhasil diekstrak");
       } else {
@@ -112,6 +114,7 @@ export default function JobForm({ onSuccess }: JobFormProps) {
       formData.append("company", company);
       formData.append("position", position);
       formData.append("hrEmail", hrEmail);
+      formData.append("whatsapp", whatsapp);
 
       const res = await fetch("/api/jobs", {
         method: "POST",
@@ -124,6 +127,7 @@ export default function JobForm({ onSuccess }: JobFormProps) {
         setCompany("");
         setPosition("");
         setHrEmail("");
+        setWhatsapp("");
       } else {
         toast.error(json.error ?? "Gagal menambahkan loker");
       }
@@ -229,6 +233,17 @@ export default function JobForm({ onSuccess }: JobFormProps) {
           placeholder="hrd@perusahaan.com"
           className="input"
           required
+        />
+      </div>
+
+      <div>
+        <label className="label">Nomor WhatsApp (opsional)</label>
+        <input
+          type="tel"
+          value={whatsapp}
+          onChange={(e) => setWhatsapp(e.target.value)}
+          placeholder="cth. 089688290484"
+          className="input"
         />
       </div>
 

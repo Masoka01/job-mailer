@@ -5,6 +5,7 @@ export interface Job {
   company: string;
   position: string;
   hrEmail: string;
+  whatsapp?: string;
   pdfUrl?: string;
   pdfName?: string;
   pdfBase64?: string;

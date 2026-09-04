@@ -34,6 +34,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     const company = formData.get("company") as string;
     const position = formData.get("position") as string;
     const hrEmail = formData.get("hrEmail") as string;
+    const whatsapp = (formData.get("whatsapp") as string) ?? "";
     const notes = (formData.get("notes") as string) ?? "";
     const pdfFile = formData.get("pdf") as File | null;
 
@@ -57,6 +58,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
       company,
       position,
       hrEmail,
+      whatsapp,
       notes,
       status: "pending" as const,
       createdAt: new Date().toISOString(),

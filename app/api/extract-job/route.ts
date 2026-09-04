@@ -26,7 +26,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
             content: [
               {
                 type: "text",
-                text: 'Analyze this job posting screenshot. Extract: company name, job position/title, and HR/recruitment email address. Normalize the output: company and position should use Title Case (capitalize first letter of each word, lowercase the rest, e.g. "Metro Busana", "Staff Accounting"). The email must be a valid email with NO spaces, lowercase, e.g. "metrobusana.plt@gmail.com". Return ONLY valid JSON with no explanation: {"company": "...", "position": "...", "email": "..."}',
+                text: 'Analyze this job posting screenshot. Extract: company name, job position/title, HR/recruitment email address, and WhatsApp/phone number if present. Normalize the output: company and position should use Title Case (capitalize first letter of each word, lowercase the rest, e.g. "Metro Busana", "Staff Accounting"). The email must be a valid email with NO spaces, lowercase, e.g. "metrobusana.plt@gmail.com". The whatsapp field should be the phone number with digits only (no spaces, dashes, or +), e.g. "089688290484". If no phone number is present, whatsapp should be an empty string "". Return ONLY valid JSON with no explanation: {"company": "...", "position": "...", "email": "...", "whatsapp": "..."}',
               },
               {
                 type: "image_url",
@@ -70,6 +70,7 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
         company: result.company || "",
         position: result.position || "",
         email: result.email || "",
+        whatsapp: result.whatsapp || "",
       },
     });
   } catch (error) {
