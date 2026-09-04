@@ -22,6 +22,14 @@ import type { Job, EmailTemplate } from "@/types";
 
 type Tab = "jobs" | "template" | "cv";
 
+interface WaTemplate {
+  id: string;
+  name: string;
+  body: string;
+  updatedAt: string;
+  isDefault?: boolean;
+}
+
 const NAV_ITEMS: { id: Tab; label: string; icon: React.ReactNode }[] = [
   {
     id: "jobs",
@@ -62,6 +70,7 @@ export default function ClientPage() {
   const [jobs, setJobs] = useState<Job[]>([]);
   const [templates, setTemplates] = useState<EmailTemplate[]>([]);
   const [activeTemplate, setActiveTemplate] = useLocalStorage<EmailTemplate | null>("jobmailer-template", null);
+  const [activeWaTemplate, setActiveWaTemplate] = useState<WaTemplate | null>(null);
   const [loadingJobs, setLoadingJobs] = useState(true);
   const [showForm, setShowForm] = useLocalStorage("jobmailer-show-form", false);
   const [cvUploaded, setCvUploaded] = useState(false);
@@ -110,6 +119,16 @@ export default function ClientPage() {
     } catch {}
   }, []);
 
+  const fetchWaTemplates = useCallback(async () => {
+    try {
+      const res = await fetch("/api/wa-templates");
+      const json = await res.json();
+      if (json.success && json.data?.length > 0) {
+        setActiveWaTemplate(json.data[0]);
+      }
+    } catch {}
+  }, []);
+
   const handleDeleteTemplate = useCallback(() => {
     fetchTemplates();
   }, [fetchTemplates]);
@@ -126,7 +145,8 @@ export default function ClientPage() {
     fetchJobs();
     fetchTemplates();
     fetchCvStatus();
-  }, [fetchJobs, fetchTemplates, fetchCvStatus]);
+    fetchWaTemplates();
+  }, [fetchJobs, fetchTemplates, fetchCvStatus, fetchWaTemplates]);
 
   const pendingCount = jobs.filter((j) => j.status === "pending").length;
   const sentCount = jobs.filter((j) => j.status === "sent").length;
@@ -317,6 +337,7 @@ export default function ClientPage() {
                 jobs={jobs}
                 loading={loadingJobs}
                 activeTemplate={activeTemplate}
+                activeWaTemplate={activeWaTemplate}
                 onRefresh={fetchJobs}
                 onAddJob={() => setShowForm(true)}
               />
