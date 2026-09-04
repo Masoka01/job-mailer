@@ -113,7 +113,13 @@ function JobCard({
       toast.error("Pilih template WA di tab 'Template Surat' terlebih dahulu");
       return;
     }
+    const h = new Date().getHours();
+    const greeting =
+      h >= 5 && h < 12 ? "Selamat pagi" :
+      h >= 12 && h < 15 ? "Selamat siang" :
+      h >= 15 && h < 18 ? "Selamat sore" : "Selamat malam";
     let text = activeWaTemplate.body
+      .replace(/\{\{greeting\}\}/g, greeting)
       .replace(/\{\{company\}\}/g, job.company)
       .replace(/\{\{position\}\}/g, job.position)
       .replace(/\{\{senderName\}\}/g, "Dimas Mayoni");

@@ -2,11 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/firebase";
 import type { ApiResponse } from "@/types";
 
-const SEED_WA_BODY = `Halo, saya Dimas Mayoni, melamar posisi {{position}} di {{company}}.
+const SEED_WA_BODY = `{{greeting}} 🙏
 
-Saya punya pengalaman bikin website pakai React, Next.js, dan Firebase. Beberapa project bisa dilihat di https://mayoni-porto.vercel.app/
+Saya Dimas Mayoni, ingin melamar posisi {{position}} di {{company}}.
 
-CV saya bisa dikirim kalau Bapak/Ibu butuh. Terima kasih.`;
+Saya freelance web developer dengan pengalaman 1+ tahun, sekarang juga aktif sebagai guru les komputer. Terbiasa bekerja mandiri maupun dalam tim.
+
+Portfolio: https://mayoni-porto.vercel.app
+
+CV dan dokumen bisa saya kirimkan jika dibutuhkan. Terima kasih 🙏`;
 
 interface WaTemplate {
   id: string;
