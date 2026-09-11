@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
-import { Save, Plus, Info, FileText, Trash2, Lock, MessageCircle } from "lucide-react";
+import { Save, Plus, Info, FileText, Trash2, MessageCircle } from "lucide-react";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import type { EmailTemplate } from "@/types";
 
@@ -53,7 +53,9 @@ export default function TemplateEditor({
   const [waIsNew, setWaIsNew] = useState(false);
   const [waDeleteTarget, setWaDeleteTarget] = useState<WaTemplate | null>(null);
 
-  const isReadOnly = activeTemplate?.isDefault && !isNew;
+  const waIsDefault = activeWaTemplate?.isDefault && !waIsNew;
+
+  const isDefaultTemplate = activeTemplate?.isDefault && !isNew;
 
   useEffect(() => {
     if (activeTemplate && !isNew) {
@@ -258,7 +260,6 @@ export default function TemplateEditor({
                   <div className="flex items-center gap-2 min-w-0">
                     <FileText className="w-3.5 h-3.5 flex-shrink-0" />
                     <p className="font-medium truncate">{t.name}</p>
-                    {t.isDefault && <Lock className="w-3 h-3 text-health-slate shrink-0" />}
                   </div>
                   {!t.isDefault && (
                     <button
@@ -273,7 +274,9 @@ export default function TemplateEditor({
                     </button>
                   )}
                 </div>
-                <p className="text-xs text-health-slate/60 truncate pl-5 mt-1">{t.subject}</p>
+                {!t.isDefault && (
+                  <p className="text-xs text-health-slate/60 truncate pl-5 mt-1">{t.subject}</p>
+                )}
               </div>
             ))}
           </div>
@@ -305,24 +308,18 @@ export default function TemplateEditor({
               </div>
             </div>
 
-            {isReadOnly && (
-              <div className="flex items-center gap-2 bg-white/5 border border-health-border rounded-lg px-4 py-2.5 text-sm text-health-muted">
-                <Lock className="w-4 h-4" />
-                Template default — hanya bisa dilihat, tidak bisa diedit. Buat template baru untuk kustomisasi.
+            {!isDefaultTemplate && (
+              <div>
+                <label className="label">Nama Template</label>
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  className="input"
+                  placeholder="cth. Template Formal"
+                />
               </div>
             )}
-
-            <div>
-              <label className="label">Nama Template</label>
-              <input
-                type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                className="input"
-                placeholder="cth. Template Formal"
-                disabled={isReadOnly}
-              />
-            </div>
             <div>
               <label className="label">Subject Email</label>
               <input
@@ -331,7 +328,6 @@ export default function TemplateEditor({
                 onChange={(e) => setSubject(e.target.value)}
                 className="input"
                 placeholder="Lamaran Kerja - {{position}} di {{company}}"
-                disabled={isReadOnly}
               />
             </div>
             <div>
@@ -341,21 +337,18 @@ export default function TemplateEditor({
                 onChange={(e) => setBody(e.target.value)}
                 rows={16}
                 className="input resize-y leading-relaxed"
-                disabled={isReadOnly}
               />
             </div>
-            {!isReadOnly && (
-              <div className="flex justify-end">
-                <button
-                  onClick={handleSave}
-                  disabled={saving}
-                  className="btn-primary"
-                >
-                  <Save className="w-4 h-4" />
-                  {saving ? "Menyimpan..." : "Simpan Template"}
-                </button>
-              </div>
-            )}
+            <div className="flex justify-end">
+              <button
+                onClick={handleSave}
+                disabled={saving}
+                className="btn-primary"
+              >
+                <Save className="w-4 h-4" />
+                {saving ? "Menyimpan..." : "Simpan Template"}
+              </button>
+            </div>
           </div>
 
           <ConfirmDialog
@@ -436,10 +429,12 @@ export default function TemplateEditor({
               </div>
             </div>
 
-            <div>
-              <label className="label">Nama Template</label>
-              <input type="text" value={waName} onChange={(e) => setWaName(e.target.value)} className="input" placeholder="cth. Template WA Formal" />
-            </div>
+            {!waIsDefault && (
+              <div>
+                <label className="label">Nama Template</label>
+                <input type="text" value={waName} onChange={(e) => setWaName(e.target.value)} className="input" placeholder="cth. Template WA Formal" />
+              </div>
+            )}
             <div>
               <label className="label">Isi Pesan WhatsApp</label>
               <textarea value={waBody} onChange={(e) => setWaBody(e.target.value)} rows={12} className="input resize-y leading-relaxed" />

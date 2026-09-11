@@ -167,7 +167,7 @@ export async function GET(): Promise<NextResponse> {
     if (snapshot.empty) {
       // Seed default template
       const defaultTemplate: Omit<EmailTemplate, "id"> = {
-        name: "Template Default",
+        name: "Template Email Default",
         subject: "Lamaran {{position}} — Dimas Mayoni",
         body: SEED_BODY,
         isDefault: true,
@@ -183,13 +183,20 @@ export async function GET(): Promise<NextResponse> {
       });
     }
 
-    // Migrate existing default template
+    // Migrate existing default template (rename only — body/subject are user-editable now)
     for (const doc of snapshot.docs) {
       const data = doc.data();
-      if (data.isDefault && data.body !== SEED_BODY) {
-        await doc.ref.update({ body: SEED_BODY, subject: "Lamaran {{position}} — Dimas Mayoni", updatedAt: new Date().toISOString() });
+      if (data.isDefault && data.name !== "Template Email Default") {
+        await doc.ref.update({ name: "Template Email Default", updatedAt: new Date().toISOString() });
         break;
       }
+    }
+
+    // Ensure a default template exists (migration for data created before isDefault existed)
+    const hasDefault = snapshot.docs.some((d) => d.data().isDefault);
+    if (!hasDefault) {
+      const oldest = snapshot.docs[snapshot.docs.length - 1];
+      await oldest.ref.update({ isDefault: true });
     }
 
     // Re-fetch after potential migration

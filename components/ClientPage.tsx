@@ -256,22 +256,6 @@ export default function ClientPage() {
               </div>
               <span className="font-sans font-semibold text-white text-sm">JobMailer</span>
             </div>
-            {tab === "jobs" && (
-              <button
-                onClick={() => setShowForm(true)}
-                className="w-9 h-9 flex items-center justify-center text-health-slate hover:text-health-sage-bright hover:bg-white/5 rounded-lg transition-colors"
-                aria-label="Tambah loker"
-              >
-                <Plus className="w-4 h-4" />
-              </button>
-            )}
-            <button
-              onClick={fetchJobs}
-              className="w-9 h-9 flex items-center justify-center text-health-slate hover:text-health-sage-bright hover:bg-white/5 rounded-lg transition-colors"
-              aria-label="Refresh data"
-            >
-              <RefreshCw className="w-4 h-4" />
-            </button>
           </div>
         </header>
 
