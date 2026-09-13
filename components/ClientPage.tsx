@@ -12,15 +12,17 @@ import {
   Plus,
   Globe,
   LogOut,
+  Settings,
 } from "lucide-react";
 import JobForm from "@/components/JobForm";
 import JobList from "@/components/JobList";
 import TemplateEditor from "@/components/TemplateEditor";
 import CVUploader from "@/components/CVUploader";
+import SettingsPanel from "@/components/SettingsPanel";
 import LoginForm from "@/components/LoginForm";
 import type { Job, EmailTemplate } from "@/types";
 
-type Tab = "jobs" | "template" | "cv";
+type Tab = "jobs" | "template" | "cv" | "settings";
 
 interface WaTemplate {
   id: string;
@@ -42,6 +44,11 @@ const NAV_ITEMS: { id: Tab; label: string; icon: React.ReactNode }[] = [
     icon: <FileText className="w-4 h-4" />,
   },
   { id: "cv", label: "CV saya", icon: <CreditCard className="w-4 h-4" /> },
+  {
+    id: "settings",
+    label: "Pengaturan",
+    icon: <Settings className="w-4 h-4" />,
+  },
 ];
 
 function StatCard({
@@ -156,6 +163,7 @@ export default function ClientPage() {
     jobs: "Daftar loker",
     template: "Template surat",
     cv: "CV saya",
+    settings: "Pengaturan",
   };
 
   if (authenticated === null) {
@@ -273,6 +281,8 @@ export default function ClientPage() {
 
         <main className="flex-1 px-4 lg:px-6 xl:px-8 py-5 lg:py-6 pb-20 lg:pb-8">
           {tab === "cv" && <CVUploader />}
+
+          {tab === "settings" && <SettingsPanel />}
 
           {tab === "jobs" && (
             <div className="space-y-4">

@@ -7,7 +7,7 @@ const SEED_BODY = `Yth. Tim Rekrutmen {{company}},
 
 Dengan hormat,
 
-Perkenalkan, saya Dimas Mayoni — seorang Web Developer yang berpengalaman membangun solusi digital mulai dari landing page, company profile, hingga aplikasi web interaktif menggunakan teknologi modern seperti React.js, Next.js, Node.js, dan Firebase.
+Perkenalkan, saya {{senderName}} — seorang Web Developer yang berpengalaman membangun solusi digital mulai dari landing page, company profile, hingga aplikasi web interaktif menggunakan teknologi modern seperti React.js, Next.js, Node.js, dan Firebase.
 
 Beberapa project yang pernah saya kerjakan antara lain platform toko online (Louwes Store) dan berbagai aplikasi berbasis web lainnya yang bisa dilihat di portofolio saya:
 https://mayoni-porto.vercel.app/
@@ -19,7 +19,7 @@ CV dan portofolio terlampir pada email ini sebagai bahan pertimbangan. Saya sang
 Terima kasih atas perhatian dan waktunya.
 
 Salam,
-Dimas Mayoni
+{{senderName}}
 {{senderEmail}}`;
 
 interface SendResult {
@@ -168,7 +168,7 @@ export async function GET(): Promise<NextResponse> {
       // Seed default template
       const defaultTemplate: Omit<EmailTemplate, "id"> = {
         name: "Template Email Default",
-        subject: "Lamaran {{position}} — Dimas Mayoni",
+        subject: "Lamaran {{position}} — {{senderName}}",
         body: SEED_BODY,
         isDefault: true,
         updatedAt: new Date().toISOString(),
@@ -189,6 +189,16 @@ export async function GET(): Promise<NextResponse> {
       if (data.isDefault && data.name !== "Template Email Default") {
         await doc.ref.update({ name: "Template Email Default", updatedAt: new Date().toISOString() });
         break;
+      }
+    }
+
+    // Migrate hardcoded sender name → {{senderName}} variable
+    for (const doc of snapshot.docs) {
+      const data = doc.data();
+      const body = (data.body ?? "").replace(/Dimas Mayoni/g, "{{senderName}}");
+      const subject = (data.subject ?? "").replace(/Dimas Mayoni/g, "{{senderName}}");
+      if (body !== data.body || subject !== data.subject) {
+        await doc.ref.update({ body, subject, updatedAt: new Date().toISOString() });
       }
     }
 

@@ -28,6 +28,7 @@ const VARIABLES = [
   { var: "{{hrEmail}}", desc: "Email HRD tujuan" },
   { var: "{{senderName}}", desc: "Nama pengirim" },
   { var: "{{senderEmail}}", desc: "Email pengirim" },
+  { var: "{{senderWa}}", desc: "Nomor WA pengirim" },
 ];
 
 export default function TemplateEditor({

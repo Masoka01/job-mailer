@@ -29,6 +29,13 @@ export interface SendEmailPayload {
   templateId: string;
 }
 
+export interface SenderSettings {
+  name: string;
+  email: string;
+  waNumber: string;
+  updatedAt: string;
+}
+
 export interface ApiResponse<T = unknown> {
   success: boolean;
   data?: T;

@@ -1,29 +1,47 @@
 import nodemailer from "nodemailer";
+import { db } from "@/lib/firebase";
 import type { Job, EmailTemplate } from "@/types";
 
-export const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.GMAIL_USER,
-    pass: process.env.GMAIL_APP_PASSWORD,
-  },
-});
+async function getSenderSettings(): Promise<{
+  name: string;
+  email: string;
+  gmailAppPassword: string;
+}> {
+  let data: Record<string, unknown> = {};
+  try {
+    const doc = await db.doc("settings/sender").get();
+    if (doc.exists) {
+      data = (doc.data() as Record<string, unknown>) ?? {};
+    }
+  } catch {
+    // fallback to env if Firestore read fails
+  }
+  const name =
+    (data.name as string) ??
+    process.env.GMAIL_NAME ??
+    process.env.GMAIL_USER?.split("@")[0]?.replace(/[._]/g, " ") ??
+    "Pelamar";
+  const email = (data.email as string) ?? process.env.GMAIL_USER ?? "";
+  const gmailAppPassword =
+    (data.gmailAppPassword as string) ?? process.env.GMAIL_APP_PASSWORD ?? "";
+  return { name, email, gmailAppPassword };
+}
 
 /**
  * Replace template variables:
  * {{company}}, {{position}}, {{hrEmail}}, {{senderName}}, {{senderEmail}}
  */
-function interpolate(text: string, job: Job): string {
-  const displayName =
-    process.env.GMAIL_NAME ??
-    process.env.GMAIL_USER?.split("@")[0]?.replace(/[._]/g, " ") ??
-    "Pelamar";
+function interpolate(
+  text: string,
+  job: Job,
+  sender: { name: string; email: string },
+): string {
   return text
     .replace(/\{\{company\}\}/g, job.company)
     .replace(/\{\{position\}\}/g, job.position)
     .replace(/\{\{hrEmail\}\}/g, job.hrEmail)
-    .replace(/\{\{senderName\}\}/g, displayName)
-    .replace(/\{\{senderEmail\}\}/g, process.env.GMAIL_USER ?? "");
+    .replace(/\{\{senderName\}\}/g, sender.name)
+    .replace(/\{\{senderEmail\}\}/g, sender.email);
 }
 
 export async function sendApplicationEmail(
@@ -32,10 +50,23 @@ export async function sendApplicationEmail(
   pdfBuffer?: Buffer,
   pdfName?: string,
   cvBuffer?: Buffer,
-  cvName?: string
+  cvName?: string,
 ): Promise<void> {
-  const subject = interpolate(template.subject, job);
-  const htmlBody = interpolate(template.body, job).replace(/\n/g, "<br>");
+  const sender = await getSenderSettings();
+
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: sender.email,
+      pass: sender.gmailAppPassword,
+    },
+  });
+
+  const subject = interpolate(template.subject, job, sender);
+  const htmlBody = interpolate(template.body, job, sender).replace(
+    /\n/g,
+    "<br>",
+  );
 
   const attachments: nodemailer.SendMailOptions["attachments"] = [];
 
@@ -57,13 +88,8 @@ export async function sendApplicationEmail(
     });
   }
 
-  const displayName =
-    process.env.GMAIL_NAME ??
-    process.env.GMAIL_USER?.split("@")[0]?.replace(/[._]/g, " ") ??
-    "Pelamar";
-
   const mailOptions: nodemailer.SendMailOptions = {
-    from: `"${displayName}" <${process.env.GMAIL_USER}>`,
+    from: `"${sender.name}" <${sender.email}>`,
     to: job.hrEmail,
     subject,
     html: `
@@ -79,6 +105,14 @@ export async function sendApplicationEmail(
 
 export async function verifyTransporter(): Promise<boolean> {
   try {
+    const sender = await getSenderSettings();
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: sender.email,
+        pass: sender.gmailAppPassword,
+      },
+    });
     await transporter.verify();
     return true;
   } catch {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import {
   Building2,
@@ -80,6 +80,20 @@ function JobCard({
   const [sending, setSending] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [markingSent, setMarkingSent] = useState(false);
+  const [senderName, setSenderName] = useState("");
+  const [senderWa, setSenderWa] = useState("");
+
+  useEffect(() => {
+    fetch("/api/sender")
+      .then((r) => r.json())
+      .then((json) => {
+        if (json.success && json.data) {
+          setSenderName(json.data.name ?? "");
+          setSenderWa(json.data.waNumber ?? "");
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   const handleSend = async () => {
     if (!activeTemplate) {
@@ -123,7 +137,8 @@ function JobCard({
       .replace(/\{\{greeting\}\}/g, greeting)
       .replace(/\{\{company\}\}/g, job.company)
       .replace(/\{\{position\}\}/g, job.position)
-      .replace(/\{\{senderName\}\}/g, "Dimas Mayoni");
+      .replace(/\{\{senderName\}\}/g, senderName)
+      .replace(/\{\{senderWa\}\}/g, senderWa);
     let phone = job.whatsapp.replace(/\D/g, "");
     if (phone.startsWith("0")) phone = "62" + phone.slice(1);
     const url = `https://wa.me/${phone}?text=${encodeURIComponent(text)}`;
