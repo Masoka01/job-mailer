@@ -45,9 +45,40 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
     });
 
     if (!groqRes.ok) {
-      const err = await groqRes.text();
-      console.error("Groq API error:", err);
-      return NextResponse.json({ success: false, error: "Gagal memproses gambar" }, { status: 502 });
+      const errText = await groqRes.text();
+      console.error("Groq API error:", groqRes.status, errText);
+
+      // Groq rate limit headers
+      const remainingTokens = groqRes.headers.get("x-ratelimit-remaining-tokens");
+      const remainingRequests = groqRes.headers.get("x-ratelimit-remaining-requests");
+      const resetTokens = groqRes.headers.get("x-ratelimit-reset-tokens");
+
+      let errorMsg = "Gagal memproses gambar";
+      if (groqRes.status === 429) {
+        errorMsg = "Limit AI tercapai, coba lagi nanti";
+        if (remainingTokens) errorMsg += ` (sisa ${remainingTokens} token)`;
+        if (resetTokens) {
+          const secs = Math.ceil(parseInt(resetTokens) / 1000);
+          errorMsg += ` — reset dalam ${secs} detik`;
+        }
+      } else {
+        // surface Groq's real error message
+        try {
+          const errJson = JSON.parse(errText);
+          if (errJson?.error?.message) errorMsg = errJson.error.message;
+        } catch {
+          /* keep generic message */
+        }
+      }
+
+      return NextResponse.json(
+        {
+          success: false,
+          error: errorMsg,
+          rateLimit: { remainingTokens, remainingRequests, resetTokens },
+        },
+        { status: 502 }
+      );
     }
 
     const data = await groqRes.json();
